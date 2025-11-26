@@ -1,0 +1,48 @@
+garanties:
+  degats_des_eaux:
+    couverture:
+      - "Fuite, rupture ou débordement de canalisation."
+      - "Infiltrations accidentelles (toiture, murs, joints)."
+      - "Débordement d’appareils électroménagers."
+      - "Dégâts causés aux voisins (responsabilité civile)."
+    exclusions:
+      - "Manque d’entretien manifeste."
+      - "Infiltration lente connue mais non traitée."
+      - "Travaux non déclarés ayant endommagé la plomberie."
+    plafond: 25000
+    franchise: 150
+
+  incendie_explosion:
+    couverture:
+      - "Incendie accidentel."
+      - "Explosion ou implosion."
+      - "Propagation de fumées accidentelles."
+      - "Chaleur sans flammes ayant causé des dommages."
+    exclusions:
+      - "Incendie volontaire ou acte intentionnel."
+      - "Installations électriques non conformes si mentionnées comme danger connues."
+    plafond: 100000
+    franchise: 300
+
+  vol_vandalisme:
+    couverture:
+      - "Vol avec effraction."
+      - "Vol par escalade."
+      - "Vol avec violence ou agression."
+      - "Détériorations lors d’une tentative de vol."
+    exclusions:
+      - "Vol sans effraction claire."
+      - "Vol par négligence (porte laissée ouverte)."
+      - "Objets non déclarés dans l’inventaire du contrat."
+    plafond: 20000
+    franchise: 200
+
+obligations_generales:
+  declaration_sinistre_jours_ouvres: 5
+  vol_vandalisme_jours_ouvres: 2
+  cat_nat_jours: 10
+
+pieces_generales:
+  - "Photos des dommages"
+  - "Factures des biens"
+  - "Preuves de propriété"

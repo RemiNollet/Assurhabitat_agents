@@ -1,0 +1,105 @@
+sinistres:
+  degats_des_eaux:
+    nom: "Dégâts des eaux"
+    delai_declaration_jours_ouvres: 5
+
+    attendu_assure:
+      - "Déclarer le sinistre dans un délai maximum de 5 jours ouvrés."
+      - "Prendre des photos/vidéos des dégâts."
+      - "Couper l’arrivée d’eau si possible."
+      - "Remplir un constat amiable dégâts des eaux avec les voisins/tiers concernés."
+      - "Contacter un plombier si la fuite est active."
+
+    pieces_justificatives:
+      - "Photos ou vidéos des dommages."
+      - "Constat amiable dégâts des eaux."
+      - "Factures éventuelles de réparations urgentes (ex: plombier)."
+
+    process_assurance:
+      - "Vérification de la garantie dégâts des eaux."
+      - "Analyse du constat amiable."
+      - "Envoi d’un plombier partenaire en cas de fuite active."
+      - "Nomination d’un expert si dommages importants."
+      - "Évaluation des dommages et estimation des coûts de remise en état."
+
+    cloture:
+      - "Remboursement des réparations sur facture."
+      - "Prise en charge directe si artisan partenaire."
+      - "Indemnisation finale selon franchise et plafond."
+
+    required_fields:
+      - date_sinistre
+      - lieu
+      - description
+      - photo
+
+  incendie_explosion:
+    nom: "Incendie / explosion"
+    delai_declaration_jours_ouvres: 5
+
+    attendu_assure:
+      - "Alerter immédiatement les pompiers."
+      - "Déclarer le sinistre dans un délai maximum de 5 jours ouvrés."
+      - "Fournir photos/vidéos des dommages."
+      - "Déposer plainte en cas de suspicion criminelle."
+      - "Établir un inventaire des biens détruits ou endommagés."
+
+    pieces_justificatives:
+      - "Rapport d’intervention des pompiers."
+      - "Inventaire des biens détruits."
+      - "Photos ou vidéos des dégâts."
+      - "Dépôt de plainte si nécessaire."
+
+    required_fields:
+      - date_sinistre
+      - lieu
+      - description
+      - photo
+
+    process_assurance:
+      - "Vérification de la garantie incendie/explosion."
+      - "Nomination immédiate d’un expert incendie."
+      - "Analyse du rapport des pompiers."
+      - "Chiffrage des travaux de remise en état."
+      - "Évaluation des pertes mobilières."
+
+    cloture:
+      - "Indemnisation selon valeur des biens déclarés."
+      - "Application de la franchise incendie."
+      - "Versement d’acomptes si nécessaire."
+      - "Clôture une fois l’expertise validée."
+
+  vol_vandalisme:
+    nom: "Vol, cambriolage, vandalisme"
+    delai_declaration_jours_ouvres: 2
+
+    attendu_assure:
+      - "Déposer plainte à la police dans les 24 heures."
+      - "Déclarer le sinistre dans les 2 jours ouvrés."
+      - "Fournir la liste détaillée des objets volés."
+      - "Présenter des preuves de propriété : factures, photos, numéros de série."
+      - "Ne pas toucher à la scène avant le passage des forces de l’ordre (si applicable)."
+
+    pieces_justificatives:
+      - "Dépôt de plainte."
+      - "Liste des objets volés."
+      - "Factures ou preuves de propriété."
+      - "Photos des effractions ou dégradations."
+
+    required_fields:
+      - date_sinistre
+      - lieu
+      - description
+      - police_report_number
+
+    process_assurance:
+      - "Vérification de la garantie vol/vandalisme."
+      - "Étude du dépôt de plainte."
+      - "Analyse des preuves de propriété."
+      - "Évaluation du montant des biens volés."
+      - "Inspection d’un expert en cas de dégradation importante."
+
+    cloture:
+      - "Indemnisation selon valeur déclarée et plafond."
+      - "Application de la franchise vol."
+      - "Clôture une fois les preuves validées."
