@@ -83,6 +83,7 @@ INSTRUCTIONS:
 - The classification must be based on the text only (no image analysis).
 - If uncertain, return "ambiguous" and provide candidates.
 - For any unknown field, use null or empty list as appropriate.
+- If the input contains already a JSON and new information, add the new information to the old JSON and return the new JSON.
 - Return valid JSON only.
 
 FEW-SHOT EXAMPLES:
