@@ -19,7 +19,7 @@ from threading import Thread
 from huggingface_hub import login
 
 # sys.path.insert(0, str(Path.cwd().parent / "src"))
-from assurhabitat_agents.config.config import HF_TOKEN, BASE_MODEL, MAX_NEW_TOKENS
+from assurhabitat_agents.config.LLM_config import HF_TOKEN, BASE_MODEL, MAX_NEW_TOKENS
 
 login(token=HF_TOKEN)
 

@@ -24,6 +24,18 @@ def verify_completeness(parsed_declaration: dict) -> Dict[str, Any]:
 
     # Load expected config from YAML
     expected = get_expected_fields(sinistre_type)
+    
+    # if a JSON string accidentally passed, try to parse it
+    if isinstance(parsed_declaration, str):
+        try:
+            parsed_declaration = json.loads(parsed_declaration)
+        except Exception:
+            import ast
+            try:
+                parsed_declaration = ast.literal_eval(parsed_declaration)
+            except Exception:
+                # give a clear error early
+                return {"is_complete": False, "missing": [], "error": "parsed_declaration not parseable"}
 
     # Get the required_fields list from the YAML,
     # or a minimal default

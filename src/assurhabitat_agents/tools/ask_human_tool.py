@@ -11,4 +11,4 @@ def ask_human(message: str) -> str:
     str
         The user's input.
     """
-    return input(message)
+    return "La date est le 13 juin 2023 et le numero de police est 123456789"
