@@ -5,6 +5,8 @@ from assurhabitat_agents.tools.verify_completness_tool import verify_completenes
 from assurhabitat_agents.tools.sinistre_conformity_tool import sinistre_conformity
 from assurhabitat_agents.tools.check_guarantee_tool import check_guarantee
 
+from assurhabitat_agents.tools.cost_estimation_tool import cost_estimation
+
 DECLARATION_TOOLS = {
     "DeclarationParser": parse_declaration,
     "AskHuman": ask_human,
@@ -13,8 +15,10 @@ DECLARATION_TOOLS = {
 
 VALIDATION_TOOLS = {
     "CheckConformity": sinistre_conformity,
-    "CheckGuarantee": check_guarantee, 
-    "tool_descriptions" = """
+    "CheckGuarantee": check_guarantee
+}
+
+VALIDATION_TOOLS_DESCRIPTION = """
 1. CheckConformity
    - Description: Analyze if an image matches the declared sinistre type.
    - Arguments:
@@ -32,4 +36,19 @@ VALIDATION_TOOLS = {
        Action: CheckGuarantee
        Arguments: {"parsed_declaration": {...}}
 """
+
+EXPERTISE_TOOLS = {
+    "CostEstimation": cost_estimation
 }
+
+EXPERTISE_TOOLS_DESCRIPTION = """
+1. CostEstimation
+   - Description: Analyze the image and estimate the cost.
+   - Arguments:
+       - image_paths: list[str]
+       - parsed_declaration: dict
+   - Example:
+       Action: CostEstimation
+       Arguments:
+           {"image_paths": ["path/to/photo.jpg"]}
+"""
