@@ -1,0 +1,16 @@
+# src/assurhabitat_agents/tools/sinistre_conformity_tool.py
+"""
+This tool take a picture and the sinistre type as arguments and analyze if the picture is conforme to the declared sinistre, using a VLM
+"""
+from PIL import Image
+
+from assurhabitat_agents.model.vlm_model_loading import vlm_inference
+
+def sinistre_conformity(image_path, sinistre_type):
+    image = Image.open(image_path)
+    
+    text = f"You are an agent from an insurrance company. You have to analyze picture and answer if the picture correspond to the declared sinister type. The sinister type is {sinistre_type}. Answer 'True' if the picture correspond to the described sinister and 'False' if it doen't match. DO NOT ANSWER SOMETHING MORE."
+
+    output = vlm_inference(image, text)
+    match = "true" in output.lower()
+    return {"match": match, "raw_output": output}
