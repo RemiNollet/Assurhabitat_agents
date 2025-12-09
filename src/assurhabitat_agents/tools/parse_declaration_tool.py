@@ -1,6 +1,6 @@
 import json
 from typing import Any, Dict, List, Optional
-from assurhabitat_agents.llm.model_loading import llm_inference
+from assurhabitat_agents.model.llm_model_loading import llm_inference
 
 def _safe_parse_json(maybe_json: Any) -> Dict[str, Any]:
     """

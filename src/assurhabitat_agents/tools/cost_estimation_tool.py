@@ -1,8 +1,8 @@
 from PIL import Image
 import json
 
-from src.assurhabitat_agents.model.vlm_model_loading import vlm_inference
-from src.assurhabitat_agents.utils import get_guarantee_for_type
+from assurhabitat_agents.model.vlm_model_loading import vlm_inference
+from assurhabitat_agents.utils import get_guarantee_for_type
 
 def cost_estimation(image_paths: list[str], parsed_declaration: dict):
     if not image_paths:

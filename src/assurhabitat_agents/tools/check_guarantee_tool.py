@@ -1,5 +1,5 @@
 # src/assurhabitat_agents/tools/check_guarantee_tool.py
-from assurhabitat_agents.utils import get_garantee_for_type
+from assurhabitat_agents.utils import get_guarantee_for_type
 from assurhabitat_agents.model.llm_model_loading import llm_inference
 
 
