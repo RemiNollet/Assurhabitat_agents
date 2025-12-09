@@ -13,6 +13,52 @@ DECLARATION_TOOLS = {
     "InformationVerification": verify_completeness
 }
 
+DECLARATION_TOOLS_DESCRIPTION = """
+1. DeclarationParser
+   - Description:
+       Extract and structure all relevant information from the user's natural-language declaration
+       (date, lieu, description, photos, biens impactés, type de sinistre, etc.).
+       Returns a JSON object representing the parsed declaration.
+   - Arguments:
+       - text: str → The raw input text from the user or combined text+previous JSON.
+   - Example:
+       Action: DeclarationParser
+       Arguments:
+           {
+               "text": "Mon appartement a été cambriolé hier soir, le 12 juin..."
+           }
+
+2. AskHuman
+   - Description:
+       Ask the human user for missing information (e.g. missing date, missing photos, missing details).
+       Returns the human's response as plain text.
+   - Arguments:
+       - question: str → The question you want to ask the user.
+   - Example:
+       Action: AskHuman
+       Arguments:
+           {
+               "question": "Pouvez-vous préciser la date exacte du sinistre ?"
+           }
+
+3. InformationVerification
+   - Description:
+       Verify if all required fields are present and valid in the parsed declaration.
+       Returns:
+         {
+           "is_complete": bool,
+           "missing": [list of missing fields]
+         }
+   - Arguments:
+       - parsed_declaration: dict → The JSON produced by DeclarationParser.
+   - Example:
+       Action: InformationVerification
+       Arguments:
+           {
+               "parsed_declaration": { ...full JSON... }
+           }
+"""
+
 VALIDATION_TOOLS = {
     "CheckConformity": sinistre_conformity,
     "CheckGuarantee": check_guarantee
@@ -38,7 +84,8 @@ VALIDATION_TOOLS_DESCRIPTION = """
 """
 
 EXPERTISE_TOOLS = {
-    "CostEstimation": cost_estimation
+    "CostEstimation": cost_estimation,
+    "AskHuman": ask_human
 }
 
 EXPERTISE_TOOLS_DESCRIPTION = """
@@ -51,4 +98,17 @@ EXPERTISE_TOOLS_DESCRIPTION = """
        Action: CostEstimation
        Arguments:
            {"image_paths": ["path/to/photo.jpg"]}
+           
+2. AskHuman
+   - Description:
+       Ask the human user for missing information (e.g. missing date, missing photos, missing details).
+       Returns the human's response as plain text.
+   - Arguments:
+       - question: str → The question you want to ask the user.
+   - Example:
+       Action: AskHuman
+       Arguments:
+           {
+               "question": "Pouvez-vous préciser la date exacte du sinistre ?"
+           }
 """

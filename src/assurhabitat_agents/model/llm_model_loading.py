@@ -22,6 +22,8 @@ from huggingface_hub import login
 # sys.path.insert(0, str(Path.cwd().parent / "src"))
 from assurhabitat_agents.config.model_config import HF_TOKEN, LLM_BASE_MODEL, MAX_NEW_TOKENS
 
+login(token=HF_TOKEN)
+
 @lru_cache(maxsize=1)
 def _load_model():
     
@@ -32,12 +34,12 @@ def _load_model():
         bnb_4bit_compute_dtype=torch.bfloat16
         )
     
-    tokenizer = MistralTokenizer.from_hf_hub(LLM_BASE_MODEL, token=HF_TOKEN)
+    tokenizer = MistralTokenizer.from_hf_hub(LLM_BASE_MODEL)
     model = AutoModelForCausalLM.from_pretrained(
         LLM_BASE_MODEL,
         device_map="auto",
-        torch_dtype=torch.bfloat16,
-        token=HF_TOKEN,
+        #torch_dtype=torch.bfloat16,
+        quantization_config=bnb_config
     )
     return tokenizer, model
 

@@ -38,7 +38,7 @@ def vlm_inference(image, text="Just analyze the picture."):
     return processor.decode(output[0])
 """
 
-from transformers import AutoProcessor, AutoModelForVision2Seq
+from transformers import AutoProcessor, AutoModelForImageTextToText
 import torch
 from PIL import Image
 from huggingface_hub import login
@@ -50,7 +50,7 @@ login(token=HF_TOKEN)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 processor = AutoProcessor.from_pretrained(VLM_BASE_MODEL)
-model = AutoModelForVision2Seq.from_pretrained(
+model = AutoModelForImageTextToText.from_pretrained(
     VLM_BASE_MODEL,
     dtype=torch.float16,
     device_map="auto"
