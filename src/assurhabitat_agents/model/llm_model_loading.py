@@ -39,7 +39,8 @@ def _load_model():
         LLM_BASE_MODEL,
         device_map="auto",
         #torch_dtype=torch.bfloat16,
-        quantization_config=bnb_config
+        quantization_config=bnb_config,
+        offload_buffers=True
     )
     return tokenizer, model
 
