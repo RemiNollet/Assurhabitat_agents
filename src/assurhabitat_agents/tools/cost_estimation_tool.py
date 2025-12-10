@@ -7,12 +7,9 @@ from assurhabitat_agents.utils import get_guarantee_for_type
 def cost_estimation(image_paths: list[str], parsed_declaration: dict):
     if not image_paths:
         return {"error": "Missing images"}
-    try:
-        image = Image.open(image_paths[0])
-    except Exception:
-        return {"error": "Cannot open image"}
-
-    image = Image.open(image_paths[0])
+    
+    image_path = image_paths[0]
+    
     prompt = """
 Analyze the following photos of a home insurance claim.
 Estimate the total cost of visible damages in euros.
@@ -25,7 +22,7 @@ Return ONLY a JSON object, strictly in this format:
 - Return ONLY valid JSON.
 - No commentary, no markdown.
 """
-    raw_output = vlm_inference(image, prompt)
+    raw_output = vlm_inference(image_path, prompt)
 
     try:
         analysis = json.loads(raw_output)

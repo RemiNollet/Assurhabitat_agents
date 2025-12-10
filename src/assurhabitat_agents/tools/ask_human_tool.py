@@ -1,4 +1,4 @@
-def ask_human(message: str) -> str:
+def ask_human(question: str) -> str:
     """Ask for user input.
 
     Parameters
@@ -11,4 +11,4 @@ def ask_human(message: str) -> str:
     str
         The user's input.
     """
-    return "La date est le 13 juin 2023 et le numero de police est 123456789"
+    return input(question)

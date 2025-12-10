@@ -132,74 +132,40 @@ def safe_get_expected_fields(sinistre_type: str) -> Optional[Dict[str, Any]]:
         return None
     
 
-def parse_output(output: str) -> Tuple[str, Any, Any]:
+def parse_output(output: str):
     text = output.strip()
 
-    # Try to find an "Action:" line (match up to end-of-line, non-greedy)
-    m_action = re.search(r"(?mi)^Action:\s*(?P<tool>[^\n\r]+)", text)
-    m_args = re.search(r"(?mi)^Arguments:\s*(?P<args>[\s\S]+)$", text)  # capture until string end
+    # Action
+    m_action = re.search(r"(?mi)^Action:\s*(?P<tool>[^\n]+)", text)
+    m_args = re.search(r"(?mi)^Arguments:\s*(?P<args>[\s\S]+)$", text)
 
-    # If action present, parse args if any
     if m_action:
-        tool_name = m_action.group("tool").strip()
-        tool_args = {}
+        tool = m_action.group("tool").strip()
+        args = {}
 
         if m_args:
-            raw_args = m_args.group("args").strip()
-            # Try JSON first
-            # after finding raw_args:
-            # cut off if raw_args contains "Observation" or "LLM output" (heuristic)
-            cut_tokens = ["Observation from", "LLM output", "Action:", "Thought:"]
-            for t in cut_tokens:
-                idx = raw_args.find(t)
-                if idx != -1:
-                    raw_args = raw_args[:idx].strip()
-                    break
+            raw = m_args.group("args").strip()
+
+            # Trim noise
+            for token in ["Observation", "LLM output", "Thought", "Action"]:
+                idx = raw.find(token)
+                if idx > 0:
+                    raw = raw[:idx].strip()
+
+            # JSON only (lists OR dicts)
             try:
-                parsed = json.loads(raw_args)
-                if isinstance(parsed, dict):
-                    tool_args = parsed
-                else:
-                    tool_args = {"raw": parsed}
+                parsed = json.loads(raw)
+                if not isinstance(parsed, dict):
+                    raise ValueError("Arguments must be a JSON object.")
+                args = parsed
             except Exception:
-                # Fallback: parse key=value lines
-                lines = [l.strip() for l in raw_args.splitlines() if l.strip()]
-                kv = {}
-                for line in lines:
-                    # accept "key = value" or "key=value"
-                    m_kv = re.match(r"^\s*([^=]+?)\s*=\s*(.+)$", line)
-                    if m_kv:
-                        key = m_kv.group(1).strip()
-                        val = m_kv.group(2).strip()
-                        # try to interpret JSON value (numbers, lists, etc.)
-                        try:
-                            val_parsed = json.loads(val)
-                        except Exception:
-                            val_parsed = val
-                        kv[key] = val_parsed
-                    else:
-                        # can't parse line -> keep raw under a list
-                        kv.setdefault("_raw_lines", []).append(line)
-                tool_args = kv if kv else {"raw": raw_args}
+                raise ValueError(f"Invalid JSON arguments: {raw}")
 
-        return ("action", tool_name, tool_args)
+        return ("action", tool, args)
 
-    # If there's a "Réponse:" or "Answer:" line, treat as final answer
-    m_answer = re.search(r"(?mi)^(Réponse|Answer):\s*(?P<ans>[\s\S]+)$", text)
-    if m_answer:
-        return ("answer", m_answer.group("ans").strip(), None)
+    # Final response
+    m_resp = re.search(r"(?mi)^(Réponse|Answer):\s*(?P<ans>[\s\S]+)$", text)
+    if m_resp:
+        return ("answer", m_resp.group("ans").strip(), None)
 
-    # Try to parse JSON directly as answer/action
-    try:
-        j = json.loads(text)
-        if isinstance(j, dict):
-            # if dict contains action key, map to action
-            if "action" in j:
-                return ("action", j.get("action"), j.get("args", {}))
-            if "answer" in j:
-                return ("answer", j.get("answer"), None)
-    except Exception:
-        pass
-
-    # otherwise fallback to thought
     return ("thought", text, None)

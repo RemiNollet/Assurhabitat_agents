@@ -69,10 +69,10 @@ VALIDATION_TOOLS_DESCRIPTION = """
    - Description: Analyze if an image matches the declared sinistre type.
    - Arguments:
        - image_paths: list[str] → The paths to the images to analyze.
-       - sinistre_type: str → The type of sinistre to check conformity with.
+       - parsed_declaration: dict → Details about the declaration of the sinister by the customer.
    - Example:
        Action: CheckConformity
-       Arguments: {"image_paths": ["path/to/photo1.jpg", "path/to/photo2.jpg"], "sinistre_type": "vol_vandalisme"}
+       Arguments: {"image_paths": ["path/to/photo1.jpg", "path/to/photo2.jpg"], "parsed_declaration": {...}}
 
 2. CheckGuarantee
    - Description: Check if the parsed declaration is guaranteed by the insurance contract.
