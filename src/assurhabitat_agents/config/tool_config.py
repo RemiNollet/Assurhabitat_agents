@@ -21,11 +21,13 @@ DECLARATION_TOOLS_DESCRIPTION = """
        Returns a JSON object representing the parsed declaration.
    - Arguments:
        - text: str → The raw input text from the user or combined text+previous JSON.
+       - pictures: list -> the paths to pictures uploaded by the user
    - Example:
        Action: DeclarationParser
        Arguments:
            {
-               "text": "Mon appartement a été cambriolé hier soir, le 12 juin..."
+               "text": "Mon appartement a été cambriolé hier soir, le 12 juin...",
+                pictures: ["path/to/picture1.jpg"]
            }
 
 2. AskHuman

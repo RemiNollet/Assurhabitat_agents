@@ -90,13 +90,15 @@ FEW-SHOT EXAMPLES:
 
 Example 1:
 Input text: "My ceiling has been leaking since yesterday, water on the floor and warped wooden floor."
+Input pictures: No pictures
 Expected JSON:
 {{"sinistre_type":"degats_des_eaux","sinistre_confidence":0.98,"sinistre_explain":"ceiling leak, water on floor","candidates":[{{"type":"degats_des_eaux","score":0.98}}],"extracted":{{"date_sinistre":null,"lieu":"bathroom","description":"ceiling leaking, water on the floor","photos":[],"biens_impactes":["ceiling","floor"],"police_report_number":null}}}}
 
 Example 2:
 Input text: "Someone forced my front door and several items are missing."
+Input pictures: "path/to/image1.jpg"
 Expected JSON:
-{{"sinistre_type":"vol_vandalisme","sinistre_confidence":0.99,"sinistre_explain":"forced entry and missing items","candidates":[{{"type":"vol_vandalisme","score":0.99}}],"extracted":{{"date_sinistre":null,"lieu":null,"description":"forced entry, missing items","photos":[],"biens_impactes":[],"police_report_number":null}}}}
+{{"sinistre_type":"vol_vandalisme","sinistre_confidence":0.99,"sinistre_explain":"forced entry and missing items","candidates":[{{"type":"vol_vandalisme","score":0.99}}],"extracted":{{"date_sinistre":null,"lieu":null,"description":"forced entry, missing items","photos":["path/to/image1.jpg"],"biens_impactes":[],"police_report_number":null}}}}
 
 Now process this input text:
 \"\"\"{raw_input}\"\"\"
