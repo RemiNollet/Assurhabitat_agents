@@ -5,7 +5,7 @@ class Orchestrator:
         self.expertise_agent = expertise_agent
 
     def run(self, user_text, image_paths=None):
-        images_path = images_path or []
+        image_paths = image_paths or []
 
         print("\n=== STEP 1 : DECLARATION AGENT ===")
         declar_state = self.run_declaration_agent(user_text, image_paths)
@@ -45,7 +45,7 @@ class Orchestrator:
     def run_declaration_agent(self, user_text, image_paths):
         initial_state = {
             "question": user_text,
-            "pictures": [image_paths],
+            "pictures": image_paths,
             "history": [],
             "last_action": None,
             "last_arguments": None,
