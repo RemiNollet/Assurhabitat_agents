@@ -4,16 +4,17 @@ class Orchestrator:
         self.validation_agent = validation_agent
         self.expertise_agent = expertise_agent
 
-    def run(self, user_text, images_path=None):
+    def run(self, user_text, image_paths=None):
         images_path = images_path or []
 
         print("\n=== STEP 1 : DECLARATION AGENT ===")
-        parsed = self.run_declaration_agent(user_text)
+        declar_state = self.run_declaration_agent(user_text, image_paths)
+        parsed = declar_state.get("parsed_declaration", None)
         if parsed is None:
             return {"status": "error", "message": "Impossible de comprendre la déclaration."}
 
         print("\n=== STEP 2 : VALIDATION AGENT ===")
-        validation = self.run_validation_agent(parsed, images_path)
+        validation = self.run_validation_agent(parsed, image_paths)
 
         if validation["image_conformity"] is False:
             return {
@@ -30,7 +31,7 @@ class Orchestrator:
             }
 
         print("\n=== STEP 3 : EXPERTISE AGENT ===")
-        expertise = self.run_expertise_agent(parsed, images_path)
+        expertise = self.run_expertise_agent(parsed, image_paths)
 
         return {
             "status": "completed",
@@ -41,19 +42,20 @@ class Orchestrator:
 
     # ---- RUN AGENTS ----
 
-    def run_declaration_agent(self, user_text):
+    def run_declaration_agent(self, user_text, image_paths):
         initial_state = {
             "question": user_text,
+            "pictures": [image_paths],
             "history": [],
             "last_action": None,
             "last_arguments": None,
             "last_observation": None,
-            "parsed_declaration": None,
             "is_complete": False,
+            "parsed_declaration": None,
             "missing": []
         }
         final = self.declaration_agent(initial_state)
-        return final.get("parsed_declaration")
+        return final
 
     def run_validation_agent(self, parsed_decl, images):
         initial_state = {
