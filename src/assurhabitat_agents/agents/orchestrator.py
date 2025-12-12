@@ -17,21 +17,23 @@ class Orchestrator:
             return {"status": "error", "message": "Impossible de comprendre la déclaration."}
 
         print("\n=== STEP 2 : VALIDATION AGENT ===")
-        validation = self.run_validation_agent(parsed, image_paths)
+        valid_state = self.run_validation_agent(parsed, image_paths)
 
-        if validation["image_conformity"] is False:
-            return {
-                "status": "rejected",
-                "reason": "Les photos ne correspondent pas au sinistre déclaré.",
-                "details": validation
-            }
+        if valid_state.get("image_conformity"):
+            if valid_state.get("image_conformity")['match'] is False:
+                return {
+                    "status": "rejected",
+                    "reason": "Les photos ne correspondent pas au sinistre déclaré.",
+                    "details": valid_state
+                }
 
-        if validation["is_garanteed"] is False:
-            return {
-                "status": "not_covered",
-                "reason": "Le sinistre n'est pas couvert par le contrat.",
-                "details": validation
-            }
+        if valid_state.get("is_garanteed"):
+            if valid_state.get("is_garanteed")['match'] is False:
+                return {
+                    "status": "not_covered",
+                    "reason": "Le sinistre n'est pas couvert par le contrat.",
+                    "details": validation
+                }
 
         print("\n=== STEP 3 : EXPERTISE AGENT ===")
         expertise = self.run_expertise_agent(parsed, image_paths)
@@ -40,7 +42,7 @@ class Orchestrator:
             "status": "completed",
             "expertise_report": expertise["report"],
             "estimation": expertise["estimation"],
-            "validation": validation,
+            "validation": valid_state,
         }
 
     # ---- RUN AGENTS ----

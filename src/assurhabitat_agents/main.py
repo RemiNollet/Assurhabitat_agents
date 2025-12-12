@@ -7,7 +7,7 @@ from assurhabitat_agents.agents.expertise_agent import run_expert_agent
 user_text = input("Please enter your declaration: ")
 images_input = input("Please insert your pictures (comma separated paths): ")
 """
-user_text = "Bonjour, on m'a cambriolé ce matin, le 12 juin, les voleurs sont passés par le vélux de la chambre et ont volé tous les appareils électroniques. Merci de me contacter rapidement. le numero de police est 12357523"
+user_text = "Bonjour, Mon appartement a pris feu a cause de la cheminee le 23 juin. J'ai perdu quelques appareil electonique tel que ma bouilloir de 30 euros."
 images_input = "/workspace/Assurhabitat_agents/data/FireDamage_7.png"
 
 

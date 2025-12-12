@@ -72,8 +72,7 @@ You must RETURN ONLY a VALID JSON object (no extra text) following this schema:
     "date_sinistre": "<YYYY-MM-DD or null>",
     "lieu": "<string or null>",
     "description": "<string>",
-    "biens_impactes": ["item1", "item2"],
-    "police_report_number": "<string or null>"
+    "biens_impactes": ["item1", "item2"]
   }}
 }}
 
@@ -90,12 +89,12 @@ FEW-SHOT EXAMPLES:
 Example 1:
 Input raw_input : "My ceiling has been leaking since yesterday, water on the floor and warped wooden floor."
 Expected JSON:
-{{"sinistre_type":"degats_des_eaux","sinistre_confidence":0.98,"sinistre_explain":"ceiling leak, water on floor","candidates":[{{"type":"degats_des_eaux","score":0.98}}],"extracted":{{"date_sinistre":null,"lieu":"bathroom","description":"ceiling leaking, water on the floor","biens_impactes":["ceiling","floor"],"police_report_number":null}}}}
+{{"sinistre_type":"degats_des_eaux","sinistre_confidence":0.98,"sinistre_explain":"ceiling leak, water on floor","candidates":[{{"type":"degats_des_eaux","score":0.98}}],"extracted":{{"date_sinistre":null,"lieu":"bathroom","description":"ceiling leaking, water on the floor","biens_impactes":["ceiling","floor"]}}}}
 
 Example 2:
 Input raw_input: "Someone forced my front door and several items are missing."
 Expected JSON:
-{{"sinistre_type":"vol_vandalisme","sinistre_confidence":0.99,"sinistre_explain":"forced entry and missing items","candidates":[{{"type":"vol_vandalisme","score":0.99}}],"extracted":{{"date_sinistre":null,"lieu":null,"description":"forced entry, missing items","biens_impactes":[],"police_report_number":null}}}}
+{{"sinistre_type":"vol_vandalisme","sinistre_confidence":0.99,"sinistre_explain":"forced entry and missing items","candidates":[{{"type":"vol_vandalisme","score":0.99}}],"extracted":{{"date_sinistre":null,"lieu":null,"description":"forced entry, missing items","biens_impactes":[door],"police_report_number":null}}}}
 
 Now process this input text:
 \"\"\"{raw_input}\"\"\"
@@ -118,8 +117,7 @@ Now process this input text:
                 "date_sinistre": None,
                 "lieu": None,
                 "description": raw_input.strip(),
-                "biens_impactes": [],
-                "police_report_number": None
+                "biens_impactes": []
             }
         }
 
@@ -148,8 +146,7 @@ Now process this input text:
         "date_sinistre": extracted.get("date_sinistre"),
         "lieu": extracted.get("lieu"),
         "description": extracted.get("description") or raw_input.strip(),
-        "biens_impactes": extracted.get("biens_impactes") if isinstance(extracted.get("biens_impactes"), list) else [],
-        "police_report_number": extracted.get("police_report_number")
+        "biens_impactes": extracted.get("biens_impactes") if isinstance(extracted.get("biens_impactes"), list) else []
     }
     result["extracted"] = extracted_safe
 

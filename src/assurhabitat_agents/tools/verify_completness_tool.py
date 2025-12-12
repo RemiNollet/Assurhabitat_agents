@@ -26,6 +26,7 @@ def verify_completeness(parsed_declaration: dict) -> Dict[str, Any]:
 
     # Load expected config from YAML
     expected = get_expected_fields(sinistre_type)
+    print(f"TOOL verify_completeness: Champs requis pour ce sinistre: {expected}")
     
     # if a JSON string accidentally passed, try to parse it
     if isinstance(parsed_declaration, str):
@@ -43,7 +44,7 @@ def verify_completeness(parsed_declaration: dict) -> Dict[str, Any]:
     # or a minimal default
     required_fields: List[str] = expected.get(
         "required_fields",
-        ["date_sinistre", "lieu"]  # simplified minimal default
+        ["date_sinistre", "lieu", "description"]  # simplified minimal default
     )
 
     missing_fields: List[str] = []

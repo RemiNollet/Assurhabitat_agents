@@ -62,7 +62,7 @@ def format_prompt_declar(state: DeclarationReActState, tools) -> str:
         "- If you call a tool, use a single line: Action: TOOL_NAME",
         "- If arguments are needed, write: Arguments: then either a JSON object or key=value lines",
         "- If you return the final reply to the user, write: answer: <text>",
-        "- When a date doesn't contain a year, consider the actual year 2025."
+        "- If you don't know the year of a provided date, consider it's the year 2025."
         "",
         "Decision rules:",
         "- if parsed_declaration is None: you MUST call DeclarationParser first.",
@@ -212,12 +212,17 @@ def node_tool_execution_declar(state: DeclarationReActState) -> DeclarationReAct
         if "DeclarationParser" in tools and isinstance(state.get("parsed_declaration"), dict):
             # Convert previous parsed_declaration to compact JSON and instruct the LLM to merge
             prev_json = json.dumps(state["parsed_declaration"], ensure_ascii=False)
+            missing = state.get("missing", [])
             combined_raw_input = (
                 "Existing parsed JSON:\n" + prev_json + "\n\n"
-                "New user input (please update the JSON using this new information):\n"
+                "Missing fields: " + str(missing) + "\n"
+                "New user input:\n"
                 + human_reply
                 + "\n\n"
+                "Please update the JSON using the new information.\n"
+                "- If there are missing fields, add those field one by one to the extracted part or the JSON and provide their answer."
                 "- If the input contains already a JSON and new information, add the new information to the old JSON and return the new JSON."
+                "Example: Input: Existing parsed JSON:{'sinistre_type': 'vol_vandalisme', 'sinistre_confidence': 0.99, 'sinistre_explain': 'cambriolage via vélux, appareils électroniques volés', 'candidates': [{'type': 'vol_vandalisme', 'score': 0.99}], 'extracted': {'date_sinistre': None, 'lieu': 'chambre', 'description': 'cambriolage via vélux, appareils électroniques volés', 'biens_impactes': ['vélux', 'appareils électroniques']}}\n\nMissing fields: ['photo', 'police_report_number']\nNew user input: 'photo1, 1234566'\n\n Output: {'sinistre_type': 'vol_vandalisme', 'sinistre_confidence': 0.99, 'sinistre_explain': 'cambriolage via vélux, appareils électroniques volés', 'candidates': [{'type': 'vol_vandalisme', 'score': 0.99}], 'extracted': {'date_sinistre': None, 'lieu': 'chambre', 'description': 'cambriolage via vélux, appareils électroniques volés', 'biens_impactes': ['vélux', 'appareils électroniques'], 'photo': ['photo1'], 'police_report_number': None}}"
             )
             try:
                 merged_obs = tools["DeclarationParser"](combined_raw_input)
