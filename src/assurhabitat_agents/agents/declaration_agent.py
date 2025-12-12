@@ -213,17 +213,78 @@ def node_tool_execution_declar(state: DeclarationReActState) -> DeclarationReAct
             # Convert previous parsed_declaration to compact JSON and instruct the LLM to merge
             prev_json = json.dumps(state["parsed_declaration"], ensure_ascii=False)
             missing = state.get("missing", [])
-            combined_raw_input = (
-                "Existing parsed JSON:\n" + prev_json + "\n\n"
-                "Missing fields: " + str(missing) + "\n"
-                "New user input:\n"
-                + human_reply
-                + "\n\n"
-                "Please update the JSON using the new information.\n"
-                "- If there are missing fields, add those field one by one to the extracted part or the JSON and provide their answer."
-                "- If the input contains already a JSON and new information, add the new information to the old JSON and return the new JSON."
-                "Example: Input: Existing parsed JSON:{'sinistre_type': 'vol_vandalisme', 'sinistre_confidence': 0.99, 'sinistre_explain': 'cambriolage via vélux, appareils électroniques volés', 'candidates': [{'type': 'vol_vandalisme', 'score': 0.99}], 'extracted': {'date_sinistre': None, 'lieu': 'chambre', 'description': 'cambriolage via vélux, appareils électroniques volés', 'biens_impactes': ['vélux', 'appareils électroniques']}}\n\nMissing fields: ['photo', 'police_report_number']\nNew user input: 'photo1, 1234566'\n\n Output: {'sinistre_type': 'vol_vandalisme', 'sinistre_confidence': 0.99, 'sinistre_explain': 'cambriolage via vélux, appareils électroniques volés', 'candidates': [{'type': 'vol_vandalisme', 'score': 0.99}], 'extracted': {'date_sinistre': None, 'lieu': 'chambre', 'description': 'cambriolage via vélux, appareils électroniques volés', 'biens_impactes': ['vélux', 'appareils électroniques'], 'photo': ['photo1'], 'police_report_number': None}}"
-            )
+            combined_raw_input = f"""
+You are now in COMPLETION MODE.
+
+The input below contains:
+1. An EXISTING parsed JSON from a previous call.
+2. A list of MISSING FIELDS that must be added inside the "extracted" section.
+3. A HUMAN REPLY that contains the missing information.
+
+Your ONLY task is to update the JSON by filling the missing fields.
+
+RULES (MANDATORY):
+- Return ONLY a valid JSON object.
+- Never remove or modify existing fields.
+- Only update json["extracted"].
+- For each missing field, assign one value extracted from the human reply.
+- Values are mapped IN ORDER: first missing field → first value, etc.
+- If a field expects a list (like "photo" or "biens_impactes"), wrap the value in a list.
+- If not enough values are provided, fill the remaining fields with null.
+- Never change classification fields ("sinistre_type", "candidates", etc.).
+- Never add explanations, comments, or text outside JSON.
+
+EXAMPLE YOU MUST FOLLOW EXACTLY:
+
+Existing JSON:
+{
+  "sinistre_type": "vol_vandalisme",
+  "sinistre_confidence": 0.99,
+  "sinistre_explain": "break-in",
+  "candidates": [{"type": "vol_vandalisme", "score": 0.99}],
+  "extracted": {
+    "date_sinistre": null,
+    "lieu": "chambre",
+    "description": "effraction",
+    "biens_impactes": ["porte"]
+  }
+}
+
+Missing fields:
+["photo", "police_report_number"]
+
+Human reply:
+"photo_12.jpg, 445677"
+
+Correct output:
+{
+  "sinistre_type": "vol_vandalisme",
+  "sinistre_confidence": 0.99,
+  "sinistre_explain": "break-in",
+  "candidates": [{"type": "vol_vandalisme", "score": 0.99}],
+  "extracted": {
+    "date_sinistre": null,
+    "lieu": "chambre",
+    "description": "effraction",
+    "biens_impactes": ["porte"],
+    "photo": ["photo_12.jpg"],
+    "police_report_number": "445677"
+  }
+}
+
+NOW APPLY THE SAME PROCESS.
+
+Existing parsed JSON:
+{prev_json}
+
+Missing fields:
+{missing}
+
+Human reply:
+{human_reply}
+
+Return the UPDATED JSON below:
+            """
             try:
                 merged_obs = tools["DeclarationParser"](combined_raw_input)
                 # If the parse_declaration returns dict, update parsed_declaration and re-run verify
