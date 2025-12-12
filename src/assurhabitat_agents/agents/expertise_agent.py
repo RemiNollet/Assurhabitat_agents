@@ -14,6 +14,7 @@ from langgraph.graph import StateGraph, START, END
 from assurhabitat_agents.model.llm_model_loading import llm_inference
 from assurhabitat_agents.config.tool_config import EXPERTISE_TOOLS, EXPERTISE_TOOLS_DESCRIPTION
 from assurhabitat_agents.utils import parse_output
+from assurhabitat_agents.config.langfuse_config import observe
 
 class ExpertiseReActState(TypedDict):
     image_paths: list[str]
@@ -107,6 +108,7 @@ def format_prompt_expert(state: ExpertiseReActState, tools) -> str:
 tools = EXPERTISE_TOOLS
 tool_names = list(EXPERTISE_TOOLS.keys())
 
+@observe(name="expertise_thought_step")
 def node_thought_action_expert(state: ExpertiseReActState) -> ExpertiseReActState:
 
     prompt = format_prompt_expert(state, tool_names)
@@ -139,6 +141,7 @@ def node_thought_action_expert(state: ExpertiseReActState) -> ExpertiseReActStat
         state["history"].append(f"Thought: {content[0] if content else ''}")
     return state
 
+@observe(name="expertise_action_step")
 def node_tool_execution_expert(state: ExpertiseReActState) -> ExpertiseReActState:
     """
     Execute the tool stored in state['last_action'] with state['last_arguments'].
@@ -178,12 +181,8 @@ def node_tool_execution_expert(state: ExpertiseReActState) -> ExpertiseReActStat
 
     return state
 
-def run_expert_agent(initial_state: ExpertiseReActState, max_steps: int = 30):
-    """
-    Runs the Expertise agent using LangGraph.
-    Thought -> Action -> Thought handled automatically.
-    """
-
+def build_graph_expert():
+    checkpointers = MemorySaver()
     # ---- BUILD THE GRAPH ----
     graph_builder = StateGraph(ExpertiseReActState)
 
@@ -208,13 +207,22 @@ def run_expert_agent(initial_state: ExpertiseReActState, max_steps: int = 30):
     graph_builder.add_edge("action", "thought")
 
     # Compile the graph
-    graph = graph_builder.compile()
+    graph = graph_builder.compile(checkpointers=checkpointers)
+    return graph
+    
+    
+def run_expert_agent(initial_state: ExpertiseReActState, max_steps: int = 30):
+    """
+    Runs the Expertise agent using LangGraph.
+    Thought -> Action -> Thought handled automatically.
+    """
+    graph = build_graph_expert()
 
     # ---- RUN THE GRAPH ----
     step = 0
     state = initial_state
 
-    for event in graph.stream(initial_state):
+    for event in graph.stream(initial_state, config={"configurable": {"thread_id": "expert1"}}):
         step += 1
         if step > max_steps:
             print("\nReached maximum step limit.")

@@ -10,10 +10,12 @@ from typing import Tuple, Dict, Any, List
 from typing_extensions import TypedDict
 
 from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import MemorySaver
 
 from assurhabitat_agents.model.llm_model_loading import llm_inference
 from assurhabitat_agents.config.tool_config import VALIDATION_TOOLS, VALIDATION_TOOLS_DESCRIPTION
 from assurhabitat_agents.utils import parse_output
+from assurhabitat_agents.config.langfuse_config import observe
 
 tools = VALIDATION_TOOLS
 tool_names = list(VALIDATION_TOOLS.keys())
@@ -93,7 +95,7 @@ def format_prompt_valid(state: ValidationReActState, tools) -> str:
     # join and return
     return "\n".join(parts)
 
-
+@observe(name="validation_thought_step")
 def node_thought_action_valid(state: ValidationReActState) -> ValidationReActState:
 
     prompt = format_prompt_valid(state, tool_names)
@@ -126,6 +128,7 @@ def node_thought_action_valid(state: ValidationReActState) -> ValidationReActSta
         state["history"].append(f"Thought: {content[0] if content else ''}")
     return state
 
+@observe(name="validation_action_step")
 def node_tool_execution_valid(state: ValidationReActState) -> ValidationReActState:
     """
     Execute the tool stored in state['last_action'] with state['last_arguments'].
@@ -183,14 +186,10 @@ def node_tool_execution_valid(state: ValidationReActState) -> ValidationReActSta
 
     return state
 
-def run_valid_agent(initial_state: ValidationReActState, max_steps: int = 30):
-    """
-    Runs the Validation agent using LangGraph's runtime.
-    Thought -> Action -> Thought loop is handled automatically.
-    """
-
+def build_graph_valid():
+    checkpointers = MemorySaver()
     # ---- BUILD THE GRAPH ----
-    graph_builder = StateGraph(ValidationReActState)
+    graph_builder = StateGraph(ValidationReActState, configurable_fields=["thread_id"])
 
     graph_builder.add_node("thought", node_thought_action_valid)
     graph_builder.add_node("action", node_tool_execution_valid)
@@ -217,14 +216,22 @@ def run_valid_agent(initial_state: ValidationReActState, max_steps: int = 30):
     graph_builder.add_edge("action", "thought")
 
     # Compile graph
-    graph = graph_builder.compile()
+    graph = graph_builder.compile(checkpointers=checkpointers)
+    return graph
+
+def run_valid_agent(initial_state: ValidationReActState, max_steps: int = 30):
+    """
+    Runs the Validation agent using LangGraph's runtime.
+    Thought -> Action -> Thought loop is handled automatically.
+    """
+    graph = build_graph_valid()
 
     # ---- RUN THE GRAPH ----
     step = 0
     state = initial_state
 
     # Stream events as they occur
-    for event in graph.stream(initial_state):
+    for event in graph.stream(initial_state, config={"configurable": {"thread_id": "valid1"}}):
         step += 1
         if step > max_steps:
             print("\nReached max steps limit.")

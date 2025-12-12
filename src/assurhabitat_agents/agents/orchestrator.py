@@ -1,9 +1,12 @@
+from assurhabitat_agents.config.langfuse_config import observe
+
 class Orchestrator:
     def __init__(self, declaration_agent, validation_agent, expertise_agent):
         self.declaration_agent = declaration_agent
         self.validation_agent = validation_agent
         self.expertise_agent = expertise_agent
-
+        
+    @observe(name="orchestration")
     def run(self, user_text, image_paths=None):
         image_paths = image_paths or []
 
@@ -41,7 +44,7 @@ class Orchestrator:
         }
 
     # ---- RUN AGENTS ----
-
+    @observe(name="run_declaration_agent")  
     def run_declaration_agent(self, user_text, image_paths):
         initial_state = {
             "question": user_text,
@@ -56,7 +59,8 @@ class Orchestrator:
         }
         final = self.declaration_agent(initial_state)
         return final
-
+        
+    @observe(name="run_validation_agent")  
     def run_validation_agent(self, parsed_decl, images):
         initial_state = {
             "images_path": images,
@@ -71,6 +75,7 @@ class Orchestrator:
         final = self.validation_agent(initial_state)
         return final
 
+    @observe(name="run_validation_agent")  
     def run_expertise_agent(self, parsed_decl, images):
         initial_state = {
             "images_path": images,

@@ -11,11 +11,13 @@ from typing_extensions import TypedDict
 
 #from langgraph.types import interrupt
 from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import MemorySaver
 
 # sys.path.insert(0, str(Path.cwd().parent / "src")) -> for notebook only
 from assurhabitat_agents.model.llm_model_loading import llm_inference
 from assurhabitat_agents.config.tool_config import DECLARATION_TOOLS, DECLARATION_TOOLS_DESCRIPTION
 from assurhabitat_agents.utils import parse_output
+from assurhabitat_agents.config.langfuse_config import observe
 
 class DeclarationReActState(TypedDict):
     question: str  # La question initiale de l'utilisateur
@@ -95,6 +97,8 @@ def format_prompt_declar(state: DeclarationReActState, tools) -> str:
 tools = DECLARATION_TOOLS
 tool_names = list(DECLARATION_TOOLS.keys())
 
+
+@observe(name="declaration_thought_step")
 def node_thought_action_declar(state: DeclarationReActState) -> DeclarationReActState:
     """
     Node that produces the next Thought/Action/Answer using the LLM.
@@ -134,6 +138,7 @@ def node_thought_action_declar(state: DeclarationReActState) -> DeclarationReAct
         state["history"].append(f"Thought: {content[0] if content else ''}")
     return state
 
+@observe(name="declaration_action_step")
 def node_tool_execution_declar(state: DeclarationReActState) -> DeclarationReActState:
     """
     Execute the tool stored in state['last_action'] with state['last_arguments'].
@@ -258,14 +263,11 @@ def node_tool_execution_declar(state: DeclarationReActState) -> DeclarationReAct
 
     return state
 
-def run_declar_agent(initial_state: DeclarationReActState, max_steps: int = 30):
-    """
-    Runs the Declaration agent using the actual LangGraph runtime,
-    instead of manually calling thought/action nodes.
-    """
-
+def build_graph_declar():
+    checkpointer = MemorySaver()
+    
     # ---- BUILD THE GRAPH ----
-    graph_builder = StateGraph(DeclarationReActState)
+    graph_builder = StateGraph(DeclarationReActState, configurable_fields=["thread_id"])
 
     graph_builder.add_node("thought", node_thought_action_declar)
     graph_builder.add_node("action", node_tool_execution_declar)
@@ -286,40 +288,39 @@ def run_declar_agent(initial_state: DeclarationReActState, max_steps: int = 30):
     graph_builder.add_edge("action", "thought")
 
     # Compile the graph
-    graph = graph_builder.compile()
+    graph = graph_builder.compile(checkpointer=checkpointer)
+    return graph
 
-    # ---- RUN THE GRAPH ----
+def run_declar_agent(initial_state, max_steps=30):
+    graph = build_graph_declar()
+
     step = 0
-    state = initial_state
+    final_state = None
 
-    # LangGraph streaming gives each event step-by-step
-    for event in graph.stream(initial_state):
+    for event in graph.stream(initial_state, config={"configurable": {"thread_id": "declar1"}}):
         step += 1
-        if step > max_steps:
-            print("\nReached max steps limit.")
-            break
+        if event["type"] != "node_state":
+            continue
+    
+        state = event["value"]
 
-        # event is a dict containing state updates
-        if "state" in event:
-            state = event["state"]
-
-        # Print newly added history lines
+        # Print history lines
         history = state.get("history", [])
-        if history:
-            print("\n".join(history))
-            state["history"] = []  # reset to avoid re-printing
+        for h in history:
+            print(h)
 
         # Stop condition
-        if state.get("is_complete"):
-            print("\nAgent finished.\n")
+        if state.get("is_complete") or state.get("answer"):
+            final_state = state
             break
 
-    # ---- FINAL STATE ----
-    print("--- FINAL STATE ---")
-    print("is_complete:", state.get("is_complete"))
-    print("parsed_declaration:", state.get("parsed_declaration"))
-    print("missing:", state.get("missing"))
-    print("answer:", state.get("answer"))
+        final_state = state
 
-    return state
+        if step >= max_steps:
+            break
 
+    print("\n--- FINAL STATE ---")
+    print("is_complete:", final_state.get("is_complete"))
+    print("parsed_declaration:", final_state.get("parsed_declaration"))
+    print("missing:", final_state.get("missing"))
+    return final_state
