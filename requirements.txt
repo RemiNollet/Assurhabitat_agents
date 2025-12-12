@@ -4,7 +4,7 @@ pydantic==2.8.2
 python-dotenv==1.0.1
 
 # === LangGraph ===
-langgraph==0.0.64
+langgraph==1.0.4
 
 # === HuggingFace & VLM/LLM Inference ===
 transformers==4.57.3
