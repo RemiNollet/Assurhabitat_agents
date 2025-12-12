@@ -57,7 +57,7 @@ def format_prompt_expert(state: ExpertiseReActState, tools) -> str:
         "Rules:",
         "- If you call a tool, use a single line: Action: TOOL_NAME",
         "- If arguments are needed, write: Arguments: then either a JSON object or key=value lines",
-        "- If you return the final reply to the user, write: Réponse: <text>",
+        "- If you return the final reply to the user, write: Answer: <text>",
         "- Never ask the user for more information.",
         "- Never produce questions.",
         "- You only generate the internal report.",
@@ -182,7 +182,7 @@ def node_tool_execution_expert(state: ExpertiseReActState) -> ExpertiseReActStat
     return state
 
 def build_graph_expert():
-    checkpointers = MemorySaver()
+    checkpointer = MemorySaver()
     # ---- BUILD THE GRAPH ----
     graph_builder = StateGraph(ExpertiseReActState)
 
@@ -207,7 +207,7 @@ def build_graph_expert():
     graph_builder.add_edge("action", "thought")
 
     # Compile the graph
-    graph = graph_builder.compile(checkpointers=checkpointers)
+    graph = graph_builder.compile(checkpointer=checkpointer)
     return graph
     
     
@@ -218,7 +218,6 @@ def run_expert_agent(initial_state: ExpertiseReActState, max_steps: int = 30):
     """
     graph = build_graph_expert()
 
-    # ---- RUN THE GRAPH ----
     step = 0
     state = initial_state
 
@@ -228,8 +227,7 @@ def run_expert_agent(initial_state: ExpertiseReActState, max_steps: int = 30):
             print("\nReached maximum step limit.")
             break
 
-        if "state" in event:
-            state = event["state"]
+        state = event
 
         # Print history incrementally
         history = state.get("history", [])

@@ -29,6 +29,7 @@ class DeclarationReActState(TypedDict):
     is_complete: bool | None  # La réponse finale
     parsed_declaration: dict | None # Stockage json de la declaration parser par le tool
     missing: list[str] | None # champs manquant dans la declarations
+    answer: str | None # Final answer
 
 def format_prompt_declar(state: DeclarationReActState, tools) -> str:
     """
@@ -50,7 +51,7 @@ def format_prompt_declar(state: DeclarationReActState, tools) -> str:
 
     parts = [
         "You are the Declaration Agent for AssurHabitat. Decide the next step: either",
-        "1) call a tool (Action) OR 2) give the final answer (Réponse).",
+        "1) call a tool (Action) OR 2) give the final answer (answer).",
         "",
         "Available tools:",
         actions_block,
@@ -60,11 +61,13 @@ def format_prompt_declar(state: DeclarationReActState, tools) -> str:
         "Rules:",
         "- If you call a tool, use a single line: Action: TOOL_NAME",
         "- If arguments are needed, write: Arguments: then either a JSON object or key=value lines",
-        "- If you return the final reply to the user, write: Réponse: <text>",
+        "- If you return the final reply to the user, write: answer: <text>",
+        "- When a date doesn't contain a year, consider the actual year 2025."
         "",
         "Decision rules:",
         "- if parsed_declaration is None: you MUST call DeclarationParser first.",
         "- All the field in parsed_declaration.extracted MUST be present. if one field is missing ask the user using AskHuman.",
+        "- if the the field pictures is [] then it mean there are no pictures and you need to ask the user for the pictures.",
         "",
         "Context summary:",
     ]
@@ -90,7 +93,7 @@ def format_prompt_declar(state: DeclarationReActState, tools) -> str:
         parts.append(", ".join(missing))
 
     parts.append("")
-    parts.append("Now propose the next single Thought + Action (or final Réponse).")
+    parts.append("Now propose the next single Thought + Action (or final answer).")
     # join and return
     return "\n".join(parts)
 
@@ -132,6 +135,7 @@ def node_thought_action_declar(state: DeclarationReActState) -> DeclarationReAct
         state["last_action"] = None
         state["last_arguments"] = None
         state["last_observation"] = None
+        state["answer"] = content[0]
         state["history"].append(f"Answer: {content[0]}")
     else:
         # Thought only: no action requested, we keep loop running
@@ -276,7 +280,7 @@ def build_graph_declar():
 
     def decide_from_thought(runtime_state: DeclarationReActState):
         # Stop if done
-        if runtime_state.get("is_complete") or runtime_state.get("answer"):
+        if runtime_state.get("answer"):
             return END
         # Action selected → go to action node
         if runtime_state.get("last_action"):
@@ -299,22 +303,16 @@ def run_declar_agent(initial_state, max_steps=30):
 
     for event in graph.stream(initial_state, config={"configurable": {"thread_id": "declar1"}}):
         step += 1
-        if event["type"] != "node_state":
-            continue
-    
-        state = event["value"]
-
-        # Print history lines
-        history = state.get("history", [])
-        for h in history:
-            print(h)
+        print(f"Step {step} ##########:\n {event}")
 
         # Stop condition
-        if state.get("is_complete") or state.get("answer"):
-            final_state = state
-            break
+        if event.get('thought'):
+            if event['thought'].get("answer"):
+                final_state = event['thought']
+                break
 
-        final_state = state
+        if event.get('thought'):
+            final_state = event['thought']
 
         if step >= max_steps:
             break
@@ -323,4 +321,5 @@ def run_declar_agent(initial_state, max_steps=30):
     print("is_complete:", final_state.get("is_complete"))
     print("parsed_declaration:", final_state.get("parsed_declaration"))
     print("missing:", final_state.get("missing"))
+    print("answer:", final_state.get("answer"))
     return final_state

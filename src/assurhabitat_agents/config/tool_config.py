@@ -20,14 +20,12 @@ DECLARATION_TOOLS_DESCRIPTION = """
        (date, lieu, description, photos, biens impactés, type de sinistre, etc.).
        Returns a JSON object representing the parsed declaration.
    - Arguments:
-       - text: str → The raw input text from the user or combined text+previous JSON.
-       - pictures: list -> the paths to pictures uploaded by the user
+       - raw_input: str → The raw input text from the user or combined text+previous JSON.
    - Example:
        Action: DeclarationParser
        Arguments:
            {
-               "text": "Mon appartement a été cambriolé hier soir, le 12 juin...",
-                pictures: ["path/to/picture1.jpg"]
+               "raw_input": "Mon appartement a été cambriolé hier soir, le 12 juin..."
            }
 
 2. AskHuman

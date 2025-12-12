@@ -1,6 +1,7 @@
 import json
 from typing import Any, Dict, List, Optional
 from assurhabitat_agents.model.llm_model_loading import llm_inference
+from assurhabitat_agents.config.langfuse_config import observe
 
 def _safe_parse_json(maybe_json: Any) -> Dict[str, Any]:
     """
@@ -30,7 +31,7 @@ def _safe_parse_json(maybe_json: Any) -> Dict[str, Any]:
     # If still failing, raise a clear error
     raise ValueError("Could not parse LLM output as JSON")
 
-
+@observe(name="parse_declaration")
 def parse_declaration(raw_input: str) -> Dict[str, Any]:
     """
     Parse a free-text insurance claim declaration and classify its type.
@@ -46,7 +47,6 @@ def parse_declaration(raw_input: str) -> Dict[str, Any]:
             "date_sinistre": "<YYYY-MM-DD or null>",
             "lieu": "<string or null>",
             "description": "<string>",
-            "photos": ["path/to/photo1.jpg", ...],
             "biens_impactes": ["...", ...],
             "police_report_number": "<string or null>"
         }
@@ -72,7 +72,6 @@ You must RETURN ONLY a VALID JSON object (no extra text) following this schema:
     "date_sinistre": "<YYYY-MM-DD or null>",
     "lieu": "<string or null>",
     "description": "<string>",
-    "photos": ["path/to/file1.jpg", "path/to/file2.png"],  # file paths only
     "biens_impactes": ["item1", "item2"],
     "police_report_number": "<string or null>"
   }}
@@ -89,16 +88,14 @@ INSTRUCTIONS:
 FEW-SHOT EXAMPLES:
 
 Example 1:
-Input text: "My ceiling has been leaking since yesterday, water on the floor and warped wooden floor."
-Input pictures: No pictures
+Input raw_input : "My ceiling has been leaking since yesterday, water on the floor and warped wooden floor."
 Expected JSON:
-{{"sinistre_type":"degats_des_eaux","sinistre_confidence":0.98,"sinistre_explain":"ceiling leak, water on floor","candidates":[{{"type":"degats_des_eaux","score":0.98}}],"extracted":{{"date_sinistre":null,"lieu":"bathroom","description":"ceiling leaking, water on the floor","photos":[],"biens_impactes":["ceiling","floor"],"police_report_number":null}}}}
+{{"sinistre_type":"degats_des_eaux","sinistre_confidence":0.98,"sinistre_explain":"ceiling leak, water on floor","candidates":[{{"type":"degats_des_eaux","score":0.98}}],"extracted":{{"date_sinistre":null,"lieu":"bathroom","description":"ceiling leaking, water on the floor","biens_impactes":["ceiling","floor"],"police_report_number":null}}}}
 
 Example 2:
-Input text: "Someone forced my front door and several items are missing."
-Input pictures: "path/to/image1.jpg"
+Input raw_input: "Someone forced my front door and several items are missing."
 Expected JSON:
-{{"sinistre_type":"vol_vandalisme","sinistre_confidence":0.99,"sinistre_explain":"forced entry and missing items","candidates":[{{"type":"vol_vandalisme","score":0.99}}],"extracted":{{"date_sinistre":null,"lieu":null,"description":"forced entry, missing items","photos":["path/to/image1.jpg"],"biens_impactes":[],"police_report_number":null}}}}
+{{"sinistre_type":"vol_vandalisme","sinistre_confidence":0.99,"sinistre_explain":"forced entry and missing items","candidates":[{{"type":"vol_vandalisme","score":0.99}}],"extracted":{{"date_sinistre":null,"lieu":null,"description":"forced entry, missing items","biens_impactes":[],"police_report_number":null}}}}
 
 Now process this input text:
 \"\"\"{raw_input}\"\"\"
@@ -121,7 +118,6 @@ Now process this input text:
                 "date_sinistre": None,
                 "lieu": None,
                 "description": raw_input.strip(),
-                "photos": [],
                 "biens_impactes": [],
                 "police_report_number": None
             }
@@ -152,7 +148,6 @@ Now process this input text:
         "date_sinistre": extracted.get("date_sinistre"),
         "lieu": extracted.get("lieu"),
         "description": extracted.get("description") or raw_input.strip(),
-        "photos": extracted.get("photos") if isinstance(extracted.get("photos"), list) else [],
         "biens_impactes": extracted.get("biens_impactes") if isinstance(extracted.get("biens_impactes"), list) else [],
         "police_report_number": extracted.get("police_report_number")
     }

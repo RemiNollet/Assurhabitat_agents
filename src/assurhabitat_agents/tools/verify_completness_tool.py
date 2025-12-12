@@ -1,6 +1,8 @@
 from typing import Dict, Any, List
 from assurhabitat_agents.utils import get_expected_fields
+from assurhabitat_agents.config.langfuse_config import observe
 
+@observe(name="verify_completeness")
 def verify_completeness(parsed_declaration: dict) -> Dict[str, Any]:
     """
     Check if the extracted claim information is complete.

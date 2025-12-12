@@ -1,3 +1,6 @@
+from assurhabitat_agents.config.langfuse_config import observe
+
+@observe(name="ask_human")
 def ask_human(question: str) -> str:
     """Ask for user input.
 

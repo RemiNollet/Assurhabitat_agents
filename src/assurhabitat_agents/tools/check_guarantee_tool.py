@@ -5,7 +5,9 @@ from assurhabitat_agents.model.llm_model_loading import llm_inference
 
 from typing import Dict, Any
 from assurhabitat_agents.utils import get_guarantee_for_type
+from assurhabitat_agents.config.langfuse_config import observe
 
+@observe(name="check_guarantee")
 def check_guarantee(parsed_declaration: Dict[str, Any]) -> Dict[str, Any]:
     sin_type = parsed_declaration.get("sinistre_type")
 

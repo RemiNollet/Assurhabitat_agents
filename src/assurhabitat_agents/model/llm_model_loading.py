@@ -17,12 +17,8 @@ from mistral_common.protocol.instruct.request import ChatCompletionRequest
 
 from threading import Thread
 
-from huggingface_hub import login
-
-# sys.path.insert(0, str(Path.cwd().parent / "src"))
 from assurhabitat_agents.config.model_config import HF_TOKEN, LLM_BASE_MODEL, MAX_NEW_TOKENS
-
-login(token=HF_TOKEN)
+from assurhabitat_agents.config.langfuse_config import observe
 
 @lru_cache(maxsize=1)
 def _load_model():
@@ -44,6 +40,7 @@ def _load_model():
     )
     return tokenizer, model
 
+@observe(name="llm inference")
 def llm_inference(prompt: str) -> str:
     """Réalise une inférence au LLM Devstral (nécessite du code spécifique à Mistral)."""
     tokenizer, model = _load_model()

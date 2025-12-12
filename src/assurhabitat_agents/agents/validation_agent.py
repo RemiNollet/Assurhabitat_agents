@@ -60,12 +60,12 @@ def format_prompt_valid(state: ValidationReActState, tools) -> str:
         "Rules:",
         "- If you call a tool, use a single line: Action: TOOL_NAME",
         "- If arguments are needed, write: Arguments: then either a JSON object or key=value lines",
-        "- If you return the final reply to the user, write: Réponse: <text>",
+        "- If you return the final reply to the user, write: Answer: <text>",
         "",
         "Decision rules:",
         "- If image_conformity is None: you MUST call CheckConformity first.",
         "- If guarantee_report is None but image_conformity.match == True: then call CheckGuarantee.",
-        "- If both are completed: produce a final 'Réponse:' for the supervisor.",
+        "- If both are completed: produce a final answer for the supervisor.",
         "",
         "Context summary:",
     ]
@@ -91,7 +91,7 @@ def format_prompt_valid(state: ValidationReActState, tools) -> str:
         parts.append("Guarantee: " + json.dumps(guarantee, ensure_ascii=False))
 
     parts.append("")
-    parts.append("Now propose the next single Thought + Action (or final Réponse).")
+    parts.append("Now propose the next single Thought + Action (or final answer).")
     # join and return
     return "\n".join(parts)
 
@@ -187,7 +187,7 @@ def node_tool_execution_valid(state: ValidationReActState) -> ValidationReActSta
     return state
 
 def build_graph_valid():
-    checkpointers = MemorySaver()
+    checkpointer = MemorySaver()
     # ---- BUILD THE GRAPH ----
     graph_builder = StateGraph(ValidationReActState, configurable_fields=["thread_id"])
 
@@ -201,10 +201,6 @@ def build_graph_valid():
         if runtime_state.get("answer"):
             return END
 
-        # Or if both reports are produced (optional domain stop condition)
-        if runtime_state.get("guarantee_report") and runtime_state.get("image_conformity"):
-            return END
-
         # If LLM selected an action → go to tool execution
         if runtime_state.get("last_action"):
             return "action"
@@ -216,7 +212,7 @@ def build_graph_valid():
     graph_builder.add_edge("action", "thought")
 
     # Compile graph
-    graph = graph_builder.compile(checkpointers=checkpointers)
+    graph = graph_builder.compile(checkpointer=checkpointer)
     return graph
 
 def run_valid_agent(initial_state: ValidationReActState, max_steps: int = 30):
@@ -233,23 +229,20 @@ def run_valid_agent(initial_state: ValidationReActState, max_steps: int = 30):
     # Stream events as they occur
     for event in graph.stream(initial_state, config={"configurable": {"thread_id": "valid1"}}):
         step += 1
+        print(f"Step {step} ##########:\n {event}")
         if step > max_steps:
             print("\nReached max steps limit.")
             break
 
-        if "state" in event:
-            state = event["state"]
-
-        # Print newly added history lines
-        history = state.get("history", [])
-        if history:
-            print("\n".join(history))
-            state["history"] = []  # Clear to avoid duplicate printing
+        if event.get('thought'):
+            state = event['thought']
 
         # Stop conditions
-        if state.get("answer"):
-            print("\nFinal answer produced.\n")
-            break
+        if event.get('thought'):
+            if state.get("answer"):
+                state = event['thought']
+                print("\nFinal answer produced.\n")
+                break
 
     # ---- FINAL STATE ----
     print("--- FINAL STATE ---")

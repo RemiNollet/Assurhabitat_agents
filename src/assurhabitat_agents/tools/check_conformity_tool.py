@@ -6,7 +6,9 @@ from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoPro
 from qwen_vl_utils import process_vision_info
 
 from assurhabitat_agents.model.vlm_model_loading import vlm_inference
+from assurhabitat_agents.config.langfuse_config import observe
 
+@observe(name="check_conformity")
 def check_conformity(image_paths, parsed_declaration):
     if not image_paths:
         return {"error": "Missing images"}

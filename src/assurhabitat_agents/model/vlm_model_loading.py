@@ -4,16 +4,15 @@ import torch
 from functools import lru_cache
 from transformers import AutoProcessor, AutoModelForImageTextToText
 from huggingface_hub import login
-from qwen_vl_utils import process_vision_info   # IMPORTANT
+from qwen_vl_utils import process_vision_info
 
 from assurhabitat_agents.config.model_config import HF_TOKEN, VLM_BASE_MODEL
-
-login(token=HF_TOKEN)
+from assurhabitat_agents.config.langfuse_config import observe
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
-@lru_cache()
+@lru_cache(maxsize=1)
 def load_vlm():
     """Load processor + model once"""
     processor = AutoProcessor.from_pretrained(VLM_BASE_MODEL)
@@ -25,7 +24,7 @@ def load_vlm():
     )
     return processor, model
 
-
+@observe(name="vlm inference")
 def vlm_inference(image_path: list[str], text: str):
     processor, model = load_vlm()
 

@@ -58,6 +58,7 @@ class Orchestrator:
             "missing": []
         }
         final = self.declaration_agent(initial_state)
+        print(f"--------Final return of run_declaration_agent: ----------\n {final}")
         return final
         
     @observe(name="run_validation_agent")  
@@ -73,6 +74,7 @@ class Orchestrator:
             "guarantee_report": None
         }
         final = self.validation_agent(initial_state)
+        print(f"--------Final return of run_validation_agent: ----------\n {final}")
         return final
 
     @observe(name="run_validation_agent")  
@@ -88,4 +90,5 @@ class Orchestrator:
             "report": None
         }
         final = self.expertise_agent(initial_state)
+        print(f"--------Final return of run_expertise_agent: ----------\n {final}")
         return final
