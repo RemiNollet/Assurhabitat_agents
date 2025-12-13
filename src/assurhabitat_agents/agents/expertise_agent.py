@@ -61,7 +61,11 @@ def format_prompt_expert(state: ExpertiseReActState, tools) -> str:
         "- If arguments are needed, write: Arguments: then either a JSON object or key=value lines",
         "- If you return the final reply to the user, write: Answer: <text>",
         "- You only generate the internal report.",
-        "- The available images are stored in state.image_paths."
+        "- The available images are listed below as a JSON array.",
+        "- When calling a tool, reuse this array verbatim.",
+        "- When calling a tool, Arguments MUST be valid JSON",
+        "- NEVER use variables or references like state.image_paths",
+        "- You MUST copy the concrete values exactly as provided in the context",
         "",
         "IMPORTANT CONTEXT:",
         "- The photos have ALREADY been provided by the user.",
@@ -131,6 +135,10 @@ def node_thought_action_expert(state: ExpertiseReActState) -> ExpertiseReActStat
     if step_type == "action":
         tool_name, tool_args = content
         # store next action and its arguments
+        if tool_name == "CostEstimation":
+            tool_args = tool_args or {}
+            tool_args["image_paths"] = state.get("image_paths", [])
+            tool_args["parsed_declaration"] = state.get("parsed_declaration")
         state["last_action"] = tool_name
         state["last_arguments"] = tool_args or {}
         # keep history friendly: record the action intention

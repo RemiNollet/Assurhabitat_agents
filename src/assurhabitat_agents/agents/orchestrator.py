@@ -32,7 +32,7 @@ class Orchestrator:
                 return {
                     "status": "not_covered",
                     "reason": "Le sinistre n'est pas couvert par le contrat.",
-                    "details": validation
+                    "details": valid_state
                 }
 
         print("\n=== STEP 3 : EXPERTISE AGENT ===")
@@ -82,7 +82,7 @@ class Orchestrator:
     @observe(name="run_validation_agent")  
     def run_expertise_agent(self, parsed_decl, images):
         initial_state = {
-            "images_path": images,
+            "image_paths": images,
             "history": [],
             "last_action": None,
             "last_arguments": None,
