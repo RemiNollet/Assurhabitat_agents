@@ -64,7 +64,7 @@ def format_prompt_valid(state: ValidationReActState, tools) -> str:
         "",
         "Decision rules:",
         "- If image_conformity is None: you MUST call CheckConformity first.",
-        "- If guarantee_report is None but image_conformity.match == True: then call CheckGuarantee.",
+        "- If guarantee_report is None but image_conformity.compatible == True: then call CheckGuarantee.",
         "- If both are completed: produce a final answer for the supervisor.",
         "",
         "Context summary:",
@@ -159,7 +159,20 @@ def node_tool_execution_valid(state: ValidationReActState) -> ValidationReActSta
 
     if tool_name == "CheckConformity":
         if isinstance(observation, dict):
-            state['image_conformity'] = observation
+            state["image_conformity"] = observation
+
+            sinistre = state["parsed_declaration"]["sinistre_type"]
+            detected = observation.get("detected_damage_types", [])
+        
+            COMPATIBILITY_RULES = {
+                "incendie_explosion": {"fire", "soot", "smoke"},
+                "degats_des_eaux": {"water", "mold"},
+                "vol_vandalisme": {"impact", "theft_signs"},
+            }
+        
+            state["image_conformity"]["compatible"] = bool(
+                set(detected) & COMPATIBILITY_RULES.get(sinistre, set())
+            )
         else:
             state["history"].append("check_conformity failed.")
             state['image_conformity'] = {
@@ -239,7 +252,7 @@ def run_valid_agent(initial_state: ValidationReActState, max_steps: int = 30):
 
         # Stop conditions
         if event.get('thought'):
-            if state.get("answer"):
+            if event['thought'].get("answer"):
                 state = event['thought']
                 print("\nFinal answer produced.\n")
                 break

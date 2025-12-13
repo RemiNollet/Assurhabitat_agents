@@ -237,18 +237,18 @@ RULES (MANDATORY):
 EXAMPLE YOU MUST FOLLOW EXACTLY:
 
 Existing JSON:
-{
+{{
   "sinistre_type": "vol_vandalisme",
   "sinistre_confidence": 0.99,
   "sinistre_explain": "break-in",
-  "candidates": [{"type": "vol_vandalisme", "score": 0.99}],
-  "extracted": {
+  "candidates": [{{"type": "vol_vandalisme", "score": 0.99}}],
+  "extracted": {{
     "date_sinistre": null,
     "lieu": "chambre",
     "description": "effraction",
     "biens_impactes": ["porte"]
-  }
-}
+  }}
+}}
 
 Missing fields:
 ["photo", "police_report_number"]
@@ -257,20 +257,20 @@ Human reply:
 "photo_12.jpg, 445677"
 
 Correct output:
-{
+{{
   "sinistre_type": "vol_vandalisme",
   "sinistre_confidence": 0.99,
   "sinistre_explain": "break-in",
-  "candidates": [{"type": "vol_vandalisme", "score": 0.99}],
-  "extracted": {
+  "candidates": [{{"type": "vol_vandalisme", "score": 0.99}}],
+  "extracted": {{
     "date_sinistre": null,
     "lieu": "chambre",
     "description": "effraction",
     "biens_impactes": ["porte"],
     "photo": ["photo_12.jpg"],
     "police_report_number": "445677"
-  }
-}
+  }}
+}}
 
 NOW APPLY THE SAME PROCESS.
 

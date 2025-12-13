@@ -10,6 +10,7 @@ from typing import Tuple, Dict, Any, List
 from typing_extensions import TypedDict
 
 from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import MemorySaver
 
 from assurhabitat_agents.model.llm_model_loading import llm_inference
 from assurhabitat_agents.config.tool_config import EXPERTISE_TOOLS, EXPERTISE_TOOLS_DESCRIPTION
@@ -18,6 +19,7 @@ from assurhabitat_agents.config.langfuse_config import observe
 
 class ExpertiseReActState(TypedDict):
     image_paths: list[str]
+    images_validated: bool
     history: list[str]
 
     last_action: str | None        
@@ -46,8 +48,8 @@ def format_prompt_expert(state: ExpertiseReActState, tools) -> str:
     actions_block = "\n".join(f"- {a}" for a in tools) if tools else "- (no tools available)"
 
     parts = [
-        "You are the Expertise Agent for AssurHabitat. Decide the next step: either",
-        "1) call a tool (Action) OR 2) give the final answer (Réponse).",
+        "You are the React agent for Expertise of AssurHabitat company. Decide the next step: either",
+        "1) call a tool (Action) OR 2) give the final answer.",
         "",
         "Available tools:",
         actions_block,
@@ -58,15 +60,19 @@ def format_prompt_expert(state: ExpertiseReActState, tools) -> str:
         "- If you call a tool, use a single line: Action: TOOL_NAME",
         "- If arguments are needed, write: Arguments: then either a JSON object or key=value lines",
         "- If you return the final reply to the user, write: Answer: <text>",
-        "- Never ask the user for more information.",
-        "- Never produce questions.",
         "- You only generate the internal report.",
         "- The available images are stored in state.image_paths."
         "",
+        "IMPORTANT CONTEXT:",
+        "- The photos have ALREADY been provided by the user.",
+        "- The photos have ALREADY been validated by a previous agent.",
+        "- You MUST NOT ask the user for photos again.",
+        "- You must assume the images are sufficient to estimate the cost.",
+        "",
         "Decision rules:",
-        "- estimation is None: you MUST call CostEstimation first.",
-        "- If you need more information from an expert to help you estimate the cost ", 
-        "or don't know something you can use the tool AskHuman",
+        "- If estimation is None: you MUST call CostEstimation first.",
+        "- You are NOT allowed to ask for photos.",
+        "- AskHuman can ONLY be used for missing expert information (e.g. material quality, surface area).",
         "When estimation is available, produce the final report.",
         "The report MUST include:"
         "- summary of the sinistre",
@@ -223,22 +229,20 @@ def run_expert_agent(initial_state: ExpertiseReActState, max_steps: int = 30):
 
     for event in graph.stream(initial_state, config={"configurable": {"thread_id": "expert1"}}):
         step += 1
+        print(f"Step {step} ##########:\n {event}")
         if step > max_steps:
             print("\nReached maximum step limit.")
             break
 
-        state = event
+        if event.get('thought'):
+            state = event['thought']
 
-        # Print history incrementally
-        history = state.get("history", [])
-        if history:
-            print("\n".join(history))
-            state["history"] = []
-
-        # Stop condition: report produced
-        if state.get("report"):
-            print("\nExpertise process complete.")
-            break
+        # Stop conditions
+        if event.get('thought'):
+            if event['thought'].get("answer"):
+                state = event['thought']
+                print("\nFinal answer produced.\n")
+                break
 
     # ---- FINAL STATE ----
     print("--- FINAL STATE ---")

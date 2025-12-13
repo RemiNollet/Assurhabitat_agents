@@ -66,7 +66,7 @@ VALIDATION_TOOLS = {
 
 VALIDATION_TOOLS_DESCRIPTION = """
 1. CheckConformity
-   - Description: Analyze if an image matches the declared sinistre type.
+   - Description: Analyze if an image and Identify visible damage types.
    - Arguments:
        - image_paths: list[str] → The paths to the images to analyze.
        - parsed_declaration: dict → Details about the declaration of the sinister by the customer.

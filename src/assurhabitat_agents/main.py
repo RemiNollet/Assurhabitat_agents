@@ -7,7 +7,7 @@ from assurhabitat_agents.agents.expertise_agent import run_expert_agent
 user_text = input("Please enter your declaration: ")
 images_input = input("Please insert your pictures (comma separated paths): ")
 """
-user_text = "Bonjour, Mon appartement a pris feu a cause de la cheminee le 23 juin. J'ai perdu quelques appareil electonique tel que ma bouilloir de 30 euros."
+user_text = "Hello, my appartement burnt on 23th july because of the chimney in the living room, my carpet is damaged. The floor is covered in black soot and debris, and there are scattered pieces of debris. I called the firefighters. "
 images_input = "/workspace/Assurhabitat_agents/data/FireDamage_7.png"
 
 

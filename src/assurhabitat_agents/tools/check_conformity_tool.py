@@ -17,18 +17,25 @@ def check_conformity(image_paths, parsed_declaration):
 
     prompt = f"""
 You are an insurance expert analyzing a claim.
-Here is the declared sinistre : **{parsed_declaration}**
+
+Here is the declared sinistre:
+{parsed_declaration}
 
 TASK 1 — Describe what is visible in the picture in 1–2 sentences.
-TASK 2 — Decide whether the picture matches the declaration.
+
+TASK 2 — Identify visible damage types.
+
+Return the types of damage visible in the image among:
+["fire", "soot", "smoke", "water", "mold", "impact", "theft_signs", "unknown"]
+
+Do NOT decide if the image matches the declaration.
+Only report what is visible.
 Answer strictly in JSON using this format:
 
 {{
   "description": "...",
-  "match": true/false
+  "detected_damage_types": ["fire", "soot"]
 }}
-Rules:
-If the pictures shows something not exactly related to the sinister, you shouldn't consider it as a match and add explanation about your decision in the description field.
 
 Do NOT add any text outside the JSON.
 """
@@ -40,14 +47,12 @@ Do NOT add any text outside the JSON.
     try:
         parsed = json.loads(output)
         description = parsed.get("description", "")
-        match = bool(parsed.get("match", False))
+        detected_damage_types = parsed.get("detected_damage_types", [])
     except Exception:
-        # fallback: classical detection
         description = output.strip()
-        match = "true" in output.lower()
 
     return {
-        "match": match,
         "description": description,
+        "detected_damage_types": detected_damage_types,
         "raw_output": output
     }

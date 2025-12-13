@@ -72,7 +72,8 @@ You must RETURN ONLY a VALID JSON object (no extra text) following this schema:
     "date_sinistre": "<YYYY-MM-DD or null>",
     "lieu": "<string or null>",
     "description": "<string>",
-    "biens_impactes": ["item1", "item2"]
+    "biens_impactes": ["item1", "item2"],
+    "police_report_number": string or null ## Add this line ONLY if sinistre_type is vol_vandalisme
   }}
 }}
 
@@ -80,6 +81,7 @@ INSTRUCTIONS:
 - Read the declaration text and classify it among the three types: degats_des_eaux, incendie_explosion, vol_vandalisme.
 - The classification must be based on the text only (no image analysis).
 - If uncertain, return "ambiguous" and provide candidates.
+- If sinistre_type is vol_vandalisme add line police_report_number in extracted, if sinistre_type is degats_des_eaux or incendie_explosion remove line police_report_number from extracted
 - For any unknown field, use null or empty list as appropriate.
 - If the input contains already a JSON and new information, add the new information to the old JSON and return the new JSON.
 - Return valid JSON only.

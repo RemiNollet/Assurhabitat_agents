@@ -20,7 +20,7 @@ class Orchestrator:
         valid_state = self.run_validation_agent(parsed, image_paths)
 
         if valid_state.get("image_conformity"):
-            if valid_state.get("image_conformity")['match'] is False:
+            if valid_state.get("image_conformity")['compatible'] is False:
                 return {
                     "status": "rejected",
                     "reason": "Les photos ne correspondent pas au sinistre déclaré.",
@@ -89,7 +89,8 @@ class Orchestrator:
             "last_observation": None,
             "parsed_declaration": parsed_decl,
             "estimation": None,
-            "report": None
+            "report": None,
+            "images_validated": True
         }
         final = self.expertise_agent(initial_state)
         print(f"--------Final return of run_expertise_agent: ----------\n {final}")

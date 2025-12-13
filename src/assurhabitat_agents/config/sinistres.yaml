@@ -31,7 +31,6 @@ sinistres:
       - date_sinistre
       - lieu
       - description
-      - photo
 
   incendie_explosion:
     nom: "Incendie / explosion"
@@ -54,7 +53,6 @@ sinistres:
       - date_sinistre
       - lieu
       - description
-      - photo
 
     process_assurance:
       - "Vérification de la garantie incendie/explosion."
