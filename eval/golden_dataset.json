@@ -1,0 +1,239 @@
+
+{
+    "case_id": "INC_01",
+    "sinistre_family": "incendie_explosion",
+    "input": {
+        "user_text": "Hello, my apartment burnt on July 23rd because of the chimney in the living room. The carpet is damaged and the floor is covered in black soot and debris. Firefighters intervened.",
+        "image_paths": ["INC_01.png"]
+    },
+    "expected_declaration_agent": {
+        "is_complete": true,
+        "missing_fields": [],
+        "parsed_declaration": {
+            "sinistre_type": "incendie_explosion",
+            "extracted": {
+                "date_sinistre": "2023-07-23",
+                "lieu": "living room",
+                "description": "apartment burnt due to chimney, carpet damaged, floor covered in soot and debris",
+                "biens_impactes": ["carpet", "floor"]
+            }
+        }
+    },
+    "expected_validation_agent": {
+        "image_conformity": true,
+        "is_guaranteed": true,
+        "guarantee_type": "incendie"
+    }
+},
+{
+    "case_id": "INC_02",
+    "sinistre_family": "incendie_explosion",
+    "input": {
+        "user_text": "There was a fire start in my kitchen due to an electrical appliance. No flames but heavy smoke damaged the walls and ceiling.",
+        "image_paths": ["INC_02.png"]
+    },
+    "expected_declaration_agent": {
+        "is_complete": true,
+        "missing_fields": [],
+        "parsed_declaration": {
+            "sinistre_type": "incendie_explosion",
+            "extracted": {
+                "date_sinistre": null,
+                "lieu": "kitchen",
+                "description": "fire start due to electrical appliance, smoke damaged walls and ceiling",
+                "biens_impactes": ["walls", "ceiling"]
+            }
+        }
+    },
+    "expected_validation_agent": {
+        "image_conformity": true,
+        "is_guaranteed": true,
+        "guarantee_type": "incendie"
+    }
+},
+{
+    "case_id": "INC_03",
+    "sinistre_family": "incendie_explosion",
+    "input": {
+        "user_text": "My water heater exploded in the bathroom. Tiles are broken and the ceiling is damaged.",
+        "image_paths": ["INC_03.png"]
+    },
+    "expected_declaration_agent": {
+        "is_complete": true,
+        "missing_fields": [],
+        "parsed_declaration": {
+            "sinistre_type": "incendie_explosion",
+            "extracted": {
+                "date_sinistre": null,
+                "lieu": "bathroom",
+                "description": "water heater explosion, broken tiles and damaged ceiling",
+                "biens_impactes": ["tiles", "ceiling"]
+            }
+        }
+    },
+    "expected_validation_agent": {
+        "image_conformity": true,
+        "is_guaranteed": true,
+        "guarantee_type": "explosion"
+    }
+},
+
+
+{
+    "case_id": "WAT_01",
+    "sinistre_family": "degat_des_eaux",
+    "input": {
+        "user_text": "My washing machine leaked overnight. Water damaged the wooden floor and the wall.",
+        "image_paths": ["WAT_01.png"]
+    },
+    "expected_declaration_agent": {
+        "is_complete": true,
+        "missing_fields": [],
+        "parsed_declaration": {
+            "sinistre_type": "degat_des_eaux",
+            "extracted": {
+                "date_sinistre": null,
+                "lieu": "laundry room",
+                "description": "washing machine leak, water damaged floor and wall",
+                "biens_impactes": ["floor", "wall"]
+            }
+        }
+    },
+    "expected_validation_agent": {
+        "image_conformity": true,
+        "is_guaranteed": true,
+        "guarantee_type": "degat_des_eaux"
+    }
+},
+{
+    "case_id": "WAT_02",
+    "sinistre_family": "degat_des_eaux",
+    "input": {
+        "user_text": "Water leaked from my upstairs neighbor. The ceiling is wet and paint is peeling.",
+        "image_paths": ["WAT_02.png"]
+    },
+    "expected_declaration_agent": {
+        "is_complete": true,
+        "missing_fields": [],
+        "parsed_declaration": {
+            "sinistre_type": "degat_des_eaux",
+            "extracted": {
+                "date_sinistre": null,
+                "lieu": "living room",
+                "description": "water leak from neighbor, wet ceiling and peeling paint",
+                "biens_impactes": ["ceiling", "paint"]
+            }
+        }
+    },
+    "expected_validation_agent": {
+        "image_conformity": true,
+        "is_guaranteed": true,
+        "guarantee_type": "degat_des_eaux"
+    }
+},
+{
+    "case_id": "WAT_03",
+    "sinistre_family": "degat_des_eaux",
+    "input": {
+        "user_text": "Heavy rain caused water infiltration through the roof. Water stains appeared in the bedroom.",
+        "image_paths": ["WAT_03.png"]
+    },
+    "expected_declaration_agent": {
+        "is_complete": true,
+        "missing_fields": [],
+        "parsed_declaration": {
+            "sinistre_type": "degat_des_eaux",
+            "extracted": {
+                "date_sinistre": null,
+                "lieu": "bedroom",
+                "description": "rain infiltration through roof, water stains on ceiling",
+                "biens_impactes": ["ceiling"]
+            }
+        }
+    },
+    "expected_validation_agent": {
+        "image_conformity": true,
+        "is_guaranteed": true,
+        "guarantee_type": "degat_des_eaux"
+    }
+},
+
+
+{
+    "case_id": "VOL_01",
+    "sinistre_family": "vol_vandalisme",
+    "input": {
+        "user_text": "My apartment was burglarized. The window was broken and electronics were stolen.",
+        "image_paths": ["VOL_01.png"]
+    },
+    "expected_declaration_agent": {
+        "is_complete": true,
+        "missing_fields": [],
+        "parsed_declaration": {
+        "sinistre_type": "vol_vandalisme",
+        "extracted": {
+            "date_sinistre": null,
+            "lieu": "living room",
+            "description": "burglary with broken window and stolen electronics",
+            "biens_impactes": ["window", "electronics"]
+        }
+        }
+    },
+    "expected_validation_agent": {
+        "image_conformity": true,
+        "is_guaranteed": true,
+        "guarantee_type": "vol"
+    }
+    },
+    {
+    "case_id": "VOL_02",
+    "sinistre_family": "vol_vandalisme",
+    "input": {
+        "user_text": "Someone vandalized my front door. The lock is broken and the door is damaged.",
+        "image_paths": ["VOL_02.png"]
+    },
+    "expected_declaration_agent": {
+        "is_complete": true,
+        "missing_fields": [],
+        "parsed_declaration": {
+            "sinistre_type": "vol_vandalisme",
+            "extracted": {
+                "date_sinistre": null,
+                "lieu": "entrance",
+                "description": "vandalized front door with broken lock",
+                "biens_impactes": ["door", "lock"]
+            }
+        }
+    },
+    "expected_validation_agent": {
+        "image_conformity": true,
+        "is_guaranteed": true,
+        "guarantee_type": "vandalisme"
+    }
+},
+{
+    "case_id": "VOL_03",
+    "sinistre_family": "vol_vandalisme",
+    "input": {
+        "user_text": "My laptop disappeared from my apartment. There was no sign of break-in.",
+        "image_paths": ["VOL_03.png"]
+    },
+    "expected_declaration_agent": {
+        "is_complete": true,
+        "missing_fields": [],
+        "parsed_declaration": {
+            "sinistre_type": "vol_vandalisme",
+            "extracted": {
+                "date_sinistre": null,
+                "lieu": "living room",
+                "description": "laptop missing without signs of break-in",
+                "biens_impactes": ["laptop"]
+            }
+        }
+    },
+    "expected_validation_agent": {
+        "image_conformity": true,
+        "is_guaranteed": false,
+        "guarantee_type": "not_covered"
+    }
+}   
