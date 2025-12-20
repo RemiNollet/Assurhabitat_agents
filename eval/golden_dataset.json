@@ -1,10 +1,10 @@
-
+[
 {
     "case_id": "INC_01",
     "sinistre_family": "incendie_explosion",
     "input": {
         "user_text": "Hello, my apartment burnt on July 23rd because of the chimney in the living room. The carpet is damaged and the floor is covered in black soot and debris. Firefighters intervened.",
-        "image_paths": ["INC_01.png"]
+        "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/INC_01.png"]
     },
     "expected_declaration_agent": {
         "is_complete": true,
@@ -30,7 +30,7 @@
     "sinistre_family": "incendie_explosion",
     "input": {
         "user_text": "There was a fire start in my kitchen due to an electrical appliance. No flames but heavy smoke damaged the walls and ceiling.",
-        "image_paths": ["INC_02.png"]
+        "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/INC_02.png"]
     },
     "expected_declaration_agent": {
         "is_complete": true,
@@ -56,7 +56,7 @@
     "sinistre_family": "incendie_explosion",
     "input": {
         "user_text": "My water heater exploded in the bathroom. Tiles are broken and the ceiling is damaged.",
-        "image_paths": ["INC_03.png"]
+        "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/INC_03.png"]
     },
     "expected_declaration_agent": {
         "is_complete": true,
@@ -84,7 +84,7 @@
     "sinistre_family": "degat_des_eaux",
     "input": {
         "user_text": "My washing machine leaked overnight. Water damaged the wooden floor and the wall.",
-        "image_paths": ["WAT_01.png"]
+        "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/WAT_01.png"]
     },
     "expected_declaration_agent": {
         "is_complete": true,
@@ -110,7 +110,7 @@
     "sinistre_family": "degat_des_eaux",
     "input": {
         "user_text": "Water leaked from my upstairs neighbor. The ceiling is wet and paint is peeling.",
-        "image_paths": ["WAT_02.png"]
+        "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/WAT_02.png"]
     },
     "expected_declaration_agent": {
         "is_complete": true,
@@ -136,7 +136,7 @@
     "sinistre_family": "degat_des_eaux",
     "input": {
         "user_text": "Heavy rain caused water infiltration through the roof. Water stains appeared in the bedroom.",
-        "image_paths": ["WAT_03.png"]
+        "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/WAT_03.png"]
     },
     "expected_declaration_agent": {
         "is_complete": true,
@@ -164,7 +164,7 @@
     "sinistre_family": "vol_vandalisme",
     "input": {
         "user_text": "My apartment was burglarized. The window was broken and electronics were stolen.",
-        "image_paths": ["VOL_01.png"]
+        "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/VOL_01.png"]
     },
     "expected_declaration_agent": {
         "is_complete": true,
@@ -184,13 +184,13 @@
         "is_guaranteed": true,
         "guarantee_type": "vol"
     }
-    },
-    {
+},
+{
     "case_id": "VOL_02",
     "sinistre_family": "vol_vandalisme",
     "input": {
         "user_text": "Someone vandalized my front door. The lock is broken and the door is damaged.",
-        "image_paths": ["VOL_02.png"]
+        "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/VOL_02.png"]
     },
     "expected_declaration_agent": {
         "is_complete": true,
@@ -216,7 +216,7 @@
     "sinistre_family": "vol_vandalisme",
     "input": {
         "user_text": "My laptop disappeared from my apartment. There was no sign of break-in.",
-        "image_paths": ["VOL_03.png"]
+        "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/VOL_03.png"]
     },
     "expected_declaration_agent": {
         "is_complete": true,
@@ -237,3 +237,4 @@
         "guarantee_type": "not_covered"
     }
 }   
+]

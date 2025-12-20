@@ -27,6 +27,9 @@ run:
 	export LANGFUSE_BASE_URL=$(LANGFUSE_BASE_URL) && \
 	cd src && python -m assurhabitat_agents.main
 
+eval:
+	python ../eval/run_evaluation.py 
+
 # =========================
 # Setup + Run
 # =========================

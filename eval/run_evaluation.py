@@ -1,7 +1,15 @@
 import json
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1] / "src"))
 from assurhabitat_agents.config.langfuse_config import langfuse, observe
-from assurhabitat_agents.agents.orchestrator import Orchestrator
 from scoring import score_declaration, score_validation
+
+from assurhabitat_agents.agents.orchestrator import Orchestrator
+from assurhabitat_agents.agents.declaration_agent import run_declar_agent
+from assurhabitat_agents.agents.validation_agent import run_valid_agent
+from assurhabitat_agents.agents.expertise_agent import run_expert_agent
 
 DATASET_NAME = "assurhabitat-golden-dataset"
 
@@ -9,15 +17,17 @@ DATASET_NAME = "assurhabitat-golden-dataset"
 # =====================================================
 # 1. Load Golden Dataset
 # =====================================================
-with open("golden_dataset.json", "r") as f:
+with open("/workspace/Assurhabitat_agents/eval/golden_dataset.json", "r") as f:
     golden_cases = json.load(f)
 
 
 # =====================================================
 # 2. Create dataset if not exists
 # =====================================================
-existing = langfuse.get_datasets()
-if DATASET_NAME not in [d.name for d in existing]:
+try:
+    langfuse.get_dataset(DATASET_NAME)
+    print(f"Dataset '{DATASET_NAME}' already exists.")
+except Exception:
     langfuse.create_dataset(
         name=DATASET_NAME,
         description="Golden dataset for AssurHabitat agents evaluation",
@@ -50,12 +60,11 @@ if DATASET_NAME not in [d.name for d in existing]:
 # =====================================================
 @observe(name="golden_dataset_evaluation")
 def evaluate_case(case, orchestrator):
+
     result = orchestrator.run(
         user_text=case["input"]["user_text"],
         image_paths=case["input"]["image_paths"]
     )
-
-    scores = {}
 
     # -------- Declaration Agent --------
     decl_score, decl_details = score_declaration(
@@ -63,23 +72,32 @@ def evaluate_case(case, orchestrator):
         expected=case["expected_declaration_agent"]
     )
 
-    scores["declaration_agent"] = {
-        "score": decl_score,
-        "details": decl_details
-    }
-
     # -------- Validation Agent --------
     val_score, val_details = score_validation(
         output=result["validation"],
         expected=case["expected_validation_agent"]
     )
 
-    scores["validation_agent"] = {
-        "score": val_score,
-        "details": val_details
-    }
+    # ---- Log scores properly ----
+    langfuse.score(
+        name="declaration_agent_score",
+        value=decl_score,
+        comment=decl_details
+    )
 
-    return scores
+    langfuse.score(
+        name="validation_agent_score",
+        value=val_score,
+        comment=val_details
+    )
+
+    return {
+        "case_id": case["case_id"],
+        "scores": {
+            "declaration_agent": decl_score,
+            "validation_agent": val_score
+        }
+    }
 
 
 # =====================================================
@@ -96,3 +114,19 @@ def run_evaluation(orchestrator):
         })
 
     return results
+
+if __name__ == "__main__":
+
+    print("Starting Golden Dataset evaluation...")
+
+    orchestrator = Orchestrator(
+        declaration_agent=run_declar_agent,
+        validation_agent=run_valid_agent,
+        expertise_agent=run_expert_agent
+    )
+
+    results = run_evaluation(orchestrator)
+
+    print("\nEvaluation completed")
+    for r in results:
+        print(r)
