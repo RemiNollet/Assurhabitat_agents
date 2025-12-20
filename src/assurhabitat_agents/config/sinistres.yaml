@@ -88,7 +88,6 @@ sinistres:
       - date_sinistre
       - lieu
       - description
-      - police_report_number
 
     process_assurance:
       - "Vérification de la garantie vol/vandalisme."

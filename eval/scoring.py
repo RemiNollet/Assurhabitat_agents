@@ -10,7 +10,7 @@ def score_declaration(output, expected):
         score = 0.5
         reasons.append("missing_fields mismatch")
 
-    return score, reasons
+    return score, str(reasons)
 
 
 def score_validation(output, expected):
@@ -25,4 +25,4 @@ def score_validation(output, expected):
         score = 0.0
         reasons.append("guarantee mismatch")
 
-    return score, reasons
+    return score, str(reasons)

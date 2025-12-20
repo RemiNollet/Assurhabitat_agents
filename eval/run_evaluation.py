@@ -79,17 +79,21 @@ def evaluate_case(case, orchestrator):
     )
 
     # ---- Log scores properly ----
-    langfuse.score(
-        name="declaration_agent_score",
-        value=decl_score,
-        comment=decl_details
-    )
+    with langfuse.start_as_current_observation(as_type="span", name="evaluation") as span:
+        # Score the current span
+        span.score(
+            name="declaration_agent_score",
+            value=decl_score,
+            data_type="NUMERIC",
+            comment=decl_details
+        )
 
-    langfuse.score(
-        name="validation_agent_score",
-        value=val_score,
-        comment=val_details
-    )
+        span.score(
+            name="validation_agent_score",
+            value=val_score,
+            data_type="NUMERIC",
+            comment=val_details
+        )
 
     return {
         "case_id": case["case_id"],

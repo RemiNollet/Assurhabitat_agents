@@ -29,7 +29,7 @@
     "case_id": "INC_02",
     "sinistre_family": "incendie_explosion",
     "input": {
-        "user_text": "There was a fire start in my kitchen due to an electrical appliance. No flames but heavy smoke damaged the walls and ceiling.",
+        "user_text": "There was a fire start in my kitchen due to an electrical appliance on the 1st of january. No flames but heavy smoke damaged the walls and ceiling.",
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/INC_02.png"]
     },
     "expected_declaration_agent": {
@@ -38,7 +38,7 @@
         "parsed_declaration": {
             "sinistre_type": "incendie_explosion",
             "extracted": {
-                "date_sinistre": null,
+                "date_sinistre": "2023-01-01",
                 "lieu": "kitchen",
                 "description": "fire start due to electrical appliance, smoke damaged walls and ceiling",
                 "biens_impactes": ["walls", "ceiling"]
@@ -55,7 +55,7 @@
     "case_id": "INC_03",
     "sinistre_family": "incendie_explosion",
     "input": {
-        "user_text": "My water heater exploded in the bathroom. Tiles are broken and the ceiling is damaged.",
+        "user_text": "My water heater exploded in the bathroom on the 1st of january. Tiles are broken and the ceiling is damaged.",
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/INC_03.png"]
     },
     "expected_declaration_agent": {
@@ -64,7 +64,7 @@
         "parsed_declaration": {
             "sinistre_type": "incendie_explosion",
             "extracted": {
-                "date_sinistre": null,
+                "date_sinistre": "2023-01-01",
                 "lieu": "bathroom",
                 "description": "water heater explosion, broken tiles and damaged ceiling",
                 "biens_impactes": ["tiles", "ceiling"]
@@ -83,7 +83,7 @@
     "case_id": "WAT_01",
     "sinistre_family": "degat_des_eaux",
     "input": {
-        "user_text": "My washing machine leaked overnight. Water damaged the wooden floor and the wall.",
+        "user_text": "My washing machine leaked overnight on the 1st of january. Water damaged the wooden floor and the wall.",
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/WAT_01.png"]
     },
     "expected_declaration_agent": {
@@ -92,7 +92,7 @@
         "parsed_declaration": {
             "sinistre_type": "degat_des_eaux",
             "extracted": {
-                "date_sinistre": null,
+                "date_sinistre": "2023-01-01",
                 "lieu": "laundry room",
                 "description": "washing machine leak, water damaged floor and wall",
                 "biens_impactes": ["floor", "wall"]
@@ -109,7 +109,7 @@
     "case_id": "WAT_02",
     "sinistre_family": "degat_des_eaux",
     "input": {
-        "user_text": "Water leaked from my upstairs neighbor. The ceiling is wet and paint is peeling.",
+        "user_text": "Water leaked from my upstairs neighbor on the 1st of january. The ceiling is wet and paint is peeling.",
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/WAT_02.png"]
     },
     "expected_declaration_agent": {
@@ -118,7 +118,7 @@
         "parsed_declaration": {
             "sinistre_type": "degat_des_eaux",
             "extracted": {
-                "date_sinistre": null,
+                "date_sinistre": "2023-01-01",
                 "lieu": "living room",
                 "description": "water leak from neighbor, wet ceiling and peeling paint",
                 "biens_impactes": ["ceiling", "paint"]
@@ -135,7 +135,7 @@
     "case_id": "WAT_03",
     "sinistre_family": "degat_des_eaux",
     "input": {
-        "user_text": "Heavy rain caused water infiltration through the roof. Water stains appeared in the bedroom.",
+        "user_text": "Heavy rain caused water infiltration through the roof on the 1st of january. Water stains appeared in the bedroom.",
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/WAT_03.png"]
     },
     "expected_declaration_agent": {
@@ -144,7 +144,7 @@
         "parsed_declaration": {
             "sinistre_type": "degat_des_eaux",
             "extracted": {
-                "date_sinistre": null,
+                "date_sinistre": "2023-01-01",
                 "lieu": "bedroom",
                 "description": "rain infiltration through roof, water stains on ceiling",
                 "biens_impactes": ["ceiling"]
@@ -163,7 +163,7 @@
     "case_id": "VOL_01",
     "sinistre_family": "vol_vandalisme",
     "input": {
-        "user_text": "My apartment was burglarized. The window was broken and electronics were stolen.",
+        "user_text": "My apartment was burglarized on the 1st of january. The window was broken and electronics were stolen. le numero de police est 123456789.",
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/VOL_01.png"]
     },
     "expected_declaration_agent": {
@@ -172,10 +172,11 @@
         "parsed_declaration": {
         "sinistre_type": "vol_vandalisme",
         "extracted": {
-            "date_sinistre": null,
+            "date_sinistre": "2023-01-01",
             "lieu": "living room",
             "description": "burglary with broken window and stolen electronics",
-            "biens_impactes": ["window", "electronics"]
+            "biens_impactes": ["window", "electronics"],
+            "police_report_number": 123456789
         }
         }
     },
@@ -189,7 +190,7 @@
     "case_id": "VOL_02",
     "sinistre_family": "vol_vandalisme",
     "input": {
-        "user_text": "Someone vandalized my front door. The lock is broken and the door is damaged.",
+        "user_text": "Someone vandalized my front door on the 1st of january. The lock is broken and the door is damaged. le numero de police est 123456789.",
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/VOL_02.png"]
     },
     "expected_declaration_agent": {
@@ -198,10 +199,11 @@
         "parsed_declaration": {
             "sinistre_type": "vol_vandalisme",
             "extracted": {
-                "date_sinistre": null,
+                "date_sinistre": "2023-01-01",
                 "lieu": "entrance",
                 "description": "vandalized front door with broken lock",
-                "biens_impactes": ["door", "lock"]
+                "biens_impactes": ["door", "lock"],
+                "police_report_number": 123456789
             }
         }
     },
@@ -215,7 +217,7 @@
     "case_id": "VOL_03",
     "sinistre_family": "vol_vandalisme",
     "input": {
-        "user_text": "My laptop disappeared from my apartment. There was no sign of break-in.",
+        "user_text": "My laptop disappeared from my apartment on the 1st of january. There was no sign of break-in. le numero de police est 123456789.",
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/VOL_03.png"]
     },
     "expected_declaration_agent": {
@@ -224,10 +226,11 @@
         "parsed_declaration": {
             "sinistre_type": "vol_vandalisme",
             "extracted": {
-                "date_sinistre": null,
+                "date_sinistre": "2023-01-01",
                 "lieu": "living room",
                 "description": "laptop missing without signs of break-in",
-                "biens_impactes": ["laptop"]
+                "biens_impactes": ["laptop"],
+                "police_report_number": 123456789
             }
         }
     },
