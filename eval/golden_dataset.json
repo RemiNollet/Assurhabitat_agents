@@ -7,8 +7,6 @@
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/INC_01.png"]
     },
     "expected_declaration_agent": {
-        "is_complete": true,
-        "missing_fields": [],
         "parsed_declaration": {
             "sinistre_type": "incendie_explosion",
             "extracted": {
@@ -33,8 +31,6 @@
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/INC_02.png"]
     },
     "expected_declaration_agent": {
-        "is_complete": true,
-        "missing_fields": [],
         "parsed_declaration": {
             "sinistre_type": "incendie_explosion",
             "extracted": {
@@ -59,8 +55,6 @@
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/INC_03.png"]
     },
     "expected_declaration_agent": {
-        "is_complete": true,
-        "missing_fields": [],
         "parsed_declaration": {
             "sinistre_type": "incendie_explosion",
             "extracted": {
@@ -87,8 +81,6 @@
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/WAT_01.png"]
     },
     "expected_declaration_agent": {
-        "is_complete": true,
-        "missing_fields": [],
         "parsed_declaration": {
             "sinistre_type": "degat_des_eaux",
             "extracted": {
@@ -113,8 +105,6 @@
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/WAT_02.png"]
     },
     "expected_declaration_agent": {
-        "is_complete": true,
-        "missing_fields": [],
         "parsed_declaration": {
             "sinistre_type": "degat_des_eaux",
             "extracted": {
@@ -139,8 +129,6 @@
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/WAT_03.png"]
     },
     "expected_declaration_agent": {
-        "is_complete": true,
-        "missing_fields": [],
         "parsed_declaration": {
             "sinistre_type": "degat_des_eaux",
             "extracted": {
@@ -167,17 +155,15 @@
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/VOL_01.png"]
     },
     "expected_declaration_agent": {
-        "is_complete": true,
-        "missing_fields": [],
         "parsed_declaration": {
-        "sinistre_type": "vol_vandalisme",
-        "extracted": {
-            "date_sinistre": "2023-01-01",
-            "lieu": "living room",
-            "description": "burglary with broken window and stolen electronics",
-            "biens_impactes": ["window", "electronics"],
-            "police_report_number": 123456789
-        }
+            "sinistre_type": "vol_vandalisme",
+            "extracted": {
+                "date_sinistre": "2023-01-01",
+                "lieu": "living room",
+                "description": "burglary with broken window and stolen electronics",
+                "biens_impactes": ["window", "electronics"],
+                "police_report_number": 123456789
+            }
         }
     },
     "expected_validation_agent": {
@@ -194,8 +180,6 @@
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/VOL_02.png"]
     },
     "expected_declaration_agent": {
-        "is_complete": true,
-        "missing_fields": [],
         "parsed_declaration": {
             "sinistre_type": "vol_vandalisme",
             "extracted": {
@@ -221,8 +205,6 @@
         "image_paths": ["/workspace/Assurhabitat_agents/eval/eval_pictures/VOL_03.png"]
     },
     "expected_declaration_agent": {
-        "is_complete": true,
-        "missing_fields": [],
         "parsed_declaration": {
             "sinistre_type": "vol_vandalisme",
             "extracted": {

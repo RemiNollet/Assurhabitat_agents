@@ -167,7 +167,7 @@ def node_tool_execution_valid(state: ValidationReActState) -> ValidationReActSta
             COMPATIBILITY_RULES = {
                 "incendie_explosion": {"fire", "soot", "smoke"},
                 "degats_des_eaux": {"water", "mold"},
-                "vol_vandalisme": {"impact", "theft_signs"},
+                "vol_vandalisme": {"impact", "theft_signs", "vandalism"},
             }
         
             state["image_conformity"]["compatible"] = bool(

@@ -14,7 +14,7 @@ class Orchestrator:
         declar_state = self.run_declaration_agent(user_text, image_paths)
         parsed = declar_state.get("parsed_declaration", None)
         if parsed is None:
-            return {"status": "error", "message": "Impossible de comprendre la déclaration."}
+            return {"status": "error", "message": "Impossible de comprendre la déclaration.", "validation": "Error"}
 
         print("\n=== STEP 2 : VALIDATION AGENT ===")
         valid_state = self.run_validation_agent(parsed, image_paths)
@@ -24,7 +24,8 @@ class Orchestrator:
                 return {
                     "status": "rejected",
                     "reason": "Les photos ne correspondent pas au sinistre déclaré.",
-                    "details": valid_state
+                    "details": valid_state,
+                    "validation": "Error"
                 }
 
         if valid_state.get("is_garanteed"):
@@ -32,7 +33,8 @@ class Orchestrator:
                 return {
                     "status": "not_covered",
                     "reason": "Le sinistre n'est pas couvert par le contrat.",
-                    "details": valid_state
+                    "details": valid_state,
+                    "validation": "Error"
                 }
 
         print("\n=== STEP 3 : EXPERTISE AGENT ===")
