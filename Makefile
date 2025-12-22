@@ -11,11 +11,6 @@ include .env
 # =========================
 setup:
 	pip install -r requirements.txt
-	pip install curl unzip
-	mkdir -p ../data
-	curl -L -o ../data/attachments.zip https://blent-learning-user-ressources.s3.eu-west-3.amazonaws.com/projects/00ba97/attachments.zip
-	unzip -o ../data/attachments.zip -d ../data/
-	rm -f ../data/attachments.zip
 
 # =========================
 # Run project
@@ -28,6 +23,7 @@ run:
 	cd src && python -m assurhabitat_agents.main
 
 eval:
+	cd src
 	python ../eval/run_evaluation.py 
 
 # =========================

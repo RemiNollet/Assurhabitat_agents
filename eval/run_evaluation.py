@@ -68,7 +68,7 @@ def evaluate_case(case, orchestrator):
 
     # -------- Declaration Agent --------
     decl_score, decl_details = score_declaration(
-        output=result["validation"]["parsed_declaration"],
+        parsed_declaration=result["validation"]["parsed_declaration"],
         expected=case["expected_declaration_agent"]
     )
 

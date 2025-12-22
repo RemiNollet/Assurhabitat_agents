@@ -16,14 +16,14 @@ The project combines **LLMs, Computer Vision, multi-agent orchestration, LangGra
 - **Orchestration Agent**  
   Manages the end-to-end workflow and selects the most appropriate service provider.
 - **Observability & Tracing**  
-  Full tracing of prompts, tool calls, decisions, and errors using **Langfuse**.
+  Full tracing of tool calls, decisions, and errors using **Langfuse**.
 - **Agent Evaluation Framework**  
   Golden Dataset–based evaluation with automated metrics.
 
 ---
 
 ## System Architecture
-[doc/diagram.png]
+![diagram](doc/diagram.png)
 
 ---
 
@@ -109,9 +109,9 @@ Claim families covered:
 Run the full evaluation pipeline on the golden dataset:
 
 ```bash
-python eval/run_golden_evaluation.py
+cd src/
+python ../eval/run_golden_evaluation.py
 ```
-
 
 ---
 
