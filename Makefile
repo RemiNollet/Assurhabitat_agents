@@ -23,6 +23,7 @@ run:
 	cd src && python -m assurhabitat_agents.main
 
 eval:
+	cd src
 	python ../eval/run_evaluation.py 
 
 # =========================
