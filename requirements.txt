@@ -26,6 +26,12 @@ qwen-vl-utils==0.0.14
 numpy==1.26.4
 requests==2.32.3
 
+# === Testing ===
+pytest==8.3.4
+pytest-cov==6.0.0
+pytest-mock==3.14.0
+pyyaml==6.0.2
+
 # === Optional: backend API for orchestrateur ===
 fastapi==0.111.0
 uvicorn==0.30.1

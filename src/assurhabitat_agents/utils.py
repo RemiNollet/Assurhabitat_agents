@@ -170,3 +170,90 @@ def parse_output(output: str):
 
     return ("thought", text, None)
 
+
+class DocTools:
+    """
+    Helper class to access sinistres and garanties YAML data.
+    Can be instantiated with custom paths for testing.
+    """
+    
+    def __init__(self, sinistres_path: Optional[Path] = None, garanties_path: Optional[Path] = None):
+        """
+        Initialize DocTools with optional custom paths.
+        
+        Args:
+            sinistres_path: Path to sinistres.yaml (defaults to CONFIG_DIR/sinistres.yaml)
+            garanties_path: Path to garanties.yaml (defaults to CONFIG_DIR/garanties.yaml)
+        """
+        self.sinistres_path = sinistres_path or SINISTRES_PATH
+        self.garanties_path = garanties_path or GARANTIES_PATH
+        
+        # Load data
+        self.sinistres_data = load_yaml(self.sinistres_path)
+        self.garanties_data = load_yaml(self.garanties_path)
+    
+    def get_expected_fields(self, sinistre_type: str) -> Dict[str, Any]:
+        """
+        Return the process/expected fields for a given sinistre type.
+        Wrapper around the module-level function using instance data.
+        """
+        key = _normalize_key(sinistre_type)
+        sinistres = self.sinistres_data.get("sinistres", {})
+        data = sinistres.get(key)
+        if not data:
+            raise KeyError(f"Unknown sinistre type in sinistres.yaml: {sinistre_type}")
+        
+        return {
+            "nom": data.get("nom"),
+            "delai_declaration_jours_ouvres": data.get("delai_declaration_jours_ouvres"),
+            "attendu_assure": data.get("attendu_assure", []),
+            "pieces_justificatives": data.get("pieces_justificatives", []),
+            "process_assurance": data.get("process_assurance", []),
+            "cloture": data.get("cloture", []),
+            "required_fields": data.get("required_fields", ["date_sinistre", "lieu"])
+        }
+    
+    def get_guarantee_for_type(self, sinistre_type: str) -> Dict[str, Any]:
+        """
+        Return the guarantee information for a sinistre type.
+        Wrapper around the module-level function using instance data.
+        """
+        key = _normalize_key(sinistre_type)
+        garanties = self.garanties_data.get("garanties", {})
+        data = garanties.get(key)
+        if not data:
+            raise KeyError(f"Unknown sinistre type in garanties.yaml: {sinistre_type}")
+        
+        return {
+            "couverture": data.get("couverture", []),
+            "exclusions": data.get("exclusions", []),
+            "plafond": data.get("plafond"),
+            "franchise": data.get("franchise"),
+        }
+    
+    def get_required_documents(self, sinistre_type: str) -> Dict[str, Any]:
+        """
+        Return required documents for a sinistre type.
+        Combines local pieces_justificatives with global pieces_generales.
+        """
+        key = _normalize_key(sinistre_type)
+        sinistres = self.sinistres_data.get("sinistres", {})
+        
+        local = []
+        if key in sinistres:
+            local = sinistres[key].get("pieces_justificatives", [])
+        
+        global_pieces = self.garanties_data.get("pieces_generales", [])
+        
+        # Combine while preserving order and removing duplicates
+        combined = []
+        for item in (local + global_pieces):
+            if item not in combined:
+                combined.append(item)
+        
+        notes = ""
+        if key.startswith("vol"):
+            notes = "Dépôt de plainte requis dans les 24h, joindre numéro de procès-verbal."
+        
+        return {"documents": combined, "notes": notes}
+

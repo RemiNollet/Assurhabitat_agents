@@ -115,6 +115,62 @@ python ../eval/run_golden_evaluation.py
 
 ---
 
+## 🧪 Testing
+
+The project includes comprehensive unit tests covering all agents, tools, and edge cases.
+
+### Running Tests
+
+```bash
+# Run all tests
+make test
+
+# Run with coverage report
+make test-coverage
+
+# Run specific test suites
+make test-agents    # Test only agents
+make test-tools     # Test only tools
+
+# Run tests in verbose mode
+make test-verbose
+```
+
+Or using pytest directly:
+
+```bash
+# All tests
+pytest tests/
+
+# Specific test file
+pytest tests/agents/test_declaration_agent.py -v
+
+# With coverage
+pytest tests/ --cov=src/assurhabitat_agents --cov-report=html
+```
+
+### Test Structure
+
+```
+tests/
+├── agents/           # Agent tests (52+ tests)
+├── tools/            # Tool tests (39+ tests)
+├── fixtures/         # Test fixtures and mocks
+├── conftest.py       # Pytest configuration
+└── README.md         # Testing documentation
+```
+
+**Test Coverage:**
+- ✅ Declaration Agent (complete/incomplete cases, edge cases)
+- ✅ Validation Agent (conformity checks, guarantee validation)
+- ✅ Expertise Agent (cost estimation, report generation)
+- ✅ Orchestrator (end-to-end flows, error handling)
+- ✅ All tools (parsing, conformity, guarantee checks)
+
+For detailed testing documentation, see [`tests/README.md`](tests/README.md) and [`TESTS_SUMMARY.md`](TESTS_SUMMARY.md).
+
+---
+
 ## Roadmap (Ideas)
 
 - Improved automatic scoring metrics  
