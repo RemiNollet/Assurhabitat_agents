@@ -104,7 +104,7 @@ Claim families covered:
 
 ---
 
-### ▶️ Run the Evaluation
+### Run the Evaluation
 
 Run the full evaluation pipeline on the golden dataset:
 
@@ -115,7 +115,7 @@ python ../eval/run_golden_evaluation.py
 
 ---
 
-## 🧪 Testing
+## Testing
 
 The project includes comprehensive unit tests covering all agents, tools, and edge cases.
 
@@ -167,7 +167,7 @@ tests/
 - ✅ Orchestrator (end-to-end flows, error handling)
 - ✅ All tools (parsing, conformity, guarantee checks)
 
-For detailed testing documentation, see [`tests/README.md`](tests/README.md) and [`TESTS_SUMMARY.md`](TESTS_SUMMARY.md).
+For detailed testing documentation, see [`tests/README.md`](tests/README.md).
 
 ---
 
@@ -179,7 +179,7 @@ For detailed testing documentation, see [`tests/README.md`](tests/README.md) and
 
 ---
 
-## 👤 Author
+## Author
 
 Developed by **Remi Nollet** — AI, Computer Vision, LLM & Agentic Systems engineer
 
